@@ -9,3 +9,4 @@ public class HomeworkApplication {
     SpringApplication.run(HomeworkApplication.class, args);
   }
 }
+// docker run -p 3000:3000 --rm ghcr.io/dmitry-bizin/front-react-avito:v1.21
