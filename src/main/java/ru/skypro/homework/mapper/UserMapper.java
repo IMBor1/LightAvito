@@ -17,4 +17,7 @@ public interface UserMapper {
     UserSetPasswordDto UserSetPasswordDtoToUser(User user);
     User UserToUpdateUserDto(UpdateUserDto updateUserDto);
     User UserToUpdateUserImageDto(UpdateUserImageDto updateUserImageDto);
+
+    User UserToUserSetPasswordDto(UserSetPasswordDto userSetPasswordDto);
+
 }
