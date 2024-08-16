@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.ads.AdDTO;
 import ru.skypro.homework.dto.ads.AdsDTO;
-import ru.skypro.homework.dto.ads.CreateOrUpdateAd;
-import ru.skypro.homework.dto.ads.ExtendedAd;
+import ru.skypro.homework.dto.ads.CreateOrUpdateAdDTO;
+import ru.skypro.homework.dto.ads.ExtendedAdDTO;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -15,6 +15,7 @@ import ru.skypro.homework.dto.ads.ExtendedAd;
 @RequestMapping("/ads")
 @RequiredArgsConstructor
 public class AdsController {
+
     @GetMapping
     public ResponseEntity<AdsDTO> findAllAds() {
         return ResponseEntity.ok().build();
@@ -26,7 +27,7 @@ public class AdsController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ExtendedAd> getAdInfo(@PathVariable Integer id) {
+    public ResponseEntity<ExtendedAdDTO> getAdInfo(@PathVariable Integer id) {
         return ResponseEntity.ok().build();
     }
 
@@ -36,7 +37,7 @@ public class AdsController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<AdDTO> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAd createOrUpdateAd) {
+    public ResponseEntity<AdDTO> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDTO createOrUpdateAd) {
         return ResponseEntity.ok().build();
     }
 
