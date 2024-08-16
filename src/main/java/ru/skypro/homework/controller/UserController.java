@@ -5,18 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.homework.dto.users.GetUserInfoDto;
-import ru.skypro.homework.dto.users.UpdateUserDto;
-import ru.skypro.homework.dto.users.UpdateUserImageDto;
-import ru.skypro.homework.dto.users.UserSetPasswordDto;
-import ru.skypro.homework.service.UsersService;
+import ru.skypro.homework.dto.user.UpdateUserDto;
+import ru.skypro.homework.dto.user.UpdateUserImageDto;
+import ru.skypro.homework.dto.user.UserSetPasswordDto;
 
 @Slf4j
 @RestController
 @CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
 @RequestMapping("users")
-public class UsersController {
+public class UserController {
     // private final UsersService usersService;
 
     @PostMapping("/set_password")

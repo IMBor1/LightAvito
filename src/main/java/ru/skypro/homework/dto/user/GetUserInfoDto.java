@@ -1,7 +1,8 @@
-package ru.skypro.homework.dto.users;
+package ru.skypro.homework.dto.user;
 
+import lombok.Data;
 import ru.skypro.homework.dto.Role;
-
+@Data
 public class GetUserInfoDto {
     private Integer id;
     private String email;
