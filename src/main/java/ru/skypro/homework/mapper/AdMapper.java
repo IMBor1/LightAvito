@@ -5,11 +5,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Mappings;
-import ru.skypro.homework.dto.ads.AdDTO;
-import ru.skypro.homework.dto.ads.CreateOrUpdateAdDTO;
-import ru.skypro.homework.dto.ads.ExtendedAdDTO;
+import ru.skypro.homework.dto.ads.AdDto;
+import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
+import ru.skypro.homework.dto.ads.ExtendedAdDto;
 import ru.skypro.homework.model.Ad;
-import ru.skypro.homework.repository.AdRepository;
 
 import java.util.List;
 
@@ -17,11 +16,11 @@ import java.util.List;
 public interface AdMapper {
 
     @Mapping(target = "author", source = "author.id")
-    AdDTO adToAdDTO(Ad ad);
+    AdDto adToAdDTO(Ad ad);
 
-    List<AdDTO> toListAdDTO(List<Ad> ads);
+    List<AdDto> toListAdDTO(List<Ad> ads);
 
-    CreateOrUpdateAdDTO adToCreateOrUpdateAd(Ad ad);
+    CreateOrUpdateAdDto adToCreateOrUpdateAd(Ad ad);
 
     @Mappings({
             @Mapping(target = "authorFirstName", source = "author.firstName"),
@@ -29,10 +28,10 @@ public interface AdMapper {
             @Mapping(target = "phone", source = "author.phone"),
             @Mapping(target = "email", source = "author.email")
     })
-    ExtendedAdDTO adToExtendedAd(Ad ad);
+    ExtendedAdDto adToExtendedAd(Ad ad);
 
     @Mapping(target = "author.id", source = "author")
-    Ad adDTOtoAd(AdDTO adDTO);
+    Ad adDTOtoAd(AdDto adDTO);
 
 
 }
