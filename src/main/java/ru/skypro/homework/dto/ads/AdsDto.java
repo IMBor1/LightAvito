@@ -4,10 +4,10 @@ import lombok.Data;
 
 import java.util.List;
 @Data
-public class AdsDTO {
+public class AdsDto {
 
     private Integer count;
 
-    private List<AdDTO> results;
+    private List<AdDto> results;
 
 }

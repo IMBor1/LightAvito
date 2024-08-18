@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.homework.dto.ads.AdDTO;
-import ru.skypro.homework.dto.ads.AdsDTO;
-import ru.skypro.homework.dto.ads.CreateOrUpdateAdDTO;
-import ru.skypro.homework.dto.ads.ExtendedAdDTO;
+import ru.skypro.homework.dto.ads.AdDto;
+import ru.skypro.homework.dto.ads.AdsDto;
+import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
+import ru.skypro.homework.dto.ads.ExtendedAdDto;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -17,17 +17,17 @@ import ru.skypro.homework.dto.ads.ExtendedAdDTO;
 public class AdsController {
 
     @GetMapping
-    public ResponseEntity<AdsDTO> findAllAds() {
+    public ResponseEntity<AdsDto> findAllAds() {
         return ResponseEntity.ok().build();
     }
 
     @PostMapping
-    public ResponseEntity<AdDTO> createAd(@RequestBody AdDTO adDTO) {
+    public ResponseEntity<AdDto> createAd(@RequestBody AdDto adDTO) {
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ExtendedAdDTO> getAdInfo(@PathVariable Integer id) {
+    public ResponseEntity<ExtendedAdDto> getAdInfo(@PathVariable Integer id) {
         return ResponseEntity.ok().build();
     }
 
@@ -37,12 +37,12 @@ public class AdsController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<AdDTO> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDTO createOrUpdateAd) {
+    public ResponseEntity<AdDto> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto createOrUpdateAd) {
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<AdsDTO> findMyAds() {
+    public ResponseEntity<AdsDto> findMyAds() {
         return ResponseEntity.ok().build();
     }
 

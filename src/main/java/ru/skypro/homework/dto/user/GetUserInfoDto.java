@@ -1,7 +1,7 @@
 package ru.skypro.homework.dto.user;
 
 import lombok.Data;
-import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.dto.RoleDto;
 @Data
 public class GetUserInfoDto {
     private Integer id;
@@ -9,7 +9,7 @@ public class GetUserInfoDto {
     private String firstName;
     private String lastName;
     private String phone;
-    private Role role;
+    private RoleDto role;
     private String image;
 
 }
