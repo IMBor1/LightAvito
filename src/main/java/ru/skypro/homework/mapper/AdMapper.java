@@ -14,8 +14,10 @@ import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AdMapper {
-
-    @Mapping(target = "author", source = "author.id")
+    @Mappings({
+            @Mapping(target = "author", source = "author.id"),
+            @Mapping(target = "pk", source = "id")
+    })
     AdDto adToAdDTO(Ad ad);
 
     List<AdDto> toListAdDTO(List<Ad> ads);
@@ -23,14 +25,17 @@ public interface AdMapper {
     CreateOrUpdateAdDto adToCreateOrUpdateAd(Ad ad);
 
     @Mappings({
+            @Mapping(target = "pk", source = "id"),
             @Mapping(target = "authorFirstName", source = "author.firstName"),
             @Mapping(target = "authorLastName", source = "author.lastName"),
             @Mapping(target = "phone", source = "author.phone"),
             @Mapping(target = "email", source = "author.email")
     })
     ExtendedAdDto adToExtendedAd(Ad ad);
-
-    @Mapping(target = "author.id", source = "author")
+    @Mappings({
+            @Mapping(target = "author.id", source = "author"),
+            @Mapping(target = "id", source = "pk")
+    })
     Ad adDTOtoAd(AdDto adDTO);
 
 

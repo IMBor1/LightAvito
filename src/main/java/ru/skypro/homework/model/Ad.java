@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Ad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pk;
+    private Integer id;
     private String image;
     private Integer price;
     private String title;
@@ -30,7 +30,7 @@ public class Ad {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ad ad = (Ad) o;
-        return Objects.equals(pk, ad.pk) && Objects.equals(author, ad.author) && Objects.equals(image, ad.image) && Objects.equals(price, ad.price) && Objects.equals(title, ad.title);
+        return Objects.equals(id, ad.id) && Objects.equals(author, ad.author) && Objects.equals(image, ad.image) && Objects.equals(price, ad.price) && Objects.equals(title, ad.title);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Ad {
     @Override
     public String toString() {
         return "Ad{" +
-                "pk=" + pk +
+                "pk=" + id +
                 ", author=" + author +
                 ", image='" + image + '\'' +
                 ", price=" + price +
