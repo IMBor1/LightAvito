@@ -15,7 +15,7 @@ public interface CommentMapper {
     @Mappings({
             @Mapping(target = "pk", source = "id"),
             @Mapping(target = "author", source = "author.id"),
-            @Mapping(target = "authorImage", source = "author.image"),
+            @Mapping(target = "authorImage", source = "author.avatar.filePath"),
             @Mapping(target = "authorFirstName", source = "author.firstName")
     })
     CommentDto commentToCommentDTO(Comment comment);
