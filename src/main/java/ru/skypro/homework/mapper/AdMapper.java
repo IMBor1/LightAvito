@@ -22,8 +22,6 @@ public interface AdMapper {
 
     List<AdDto> toListAdDTO(List<Ad> ads);
 
-    CreateOrUpdateAdDto adToCreateOrUpdateAd(Ad ad);
-
     @Mappings({
             @Mapping(target = "pk", source = "id"),
             @Mapping(target = "authorFirstName", source = "author.firstName"),
@@ -37,7 +35,5 @@ public interface AdMapper {
             @Mapping(target = "id", source = "pk")
     })
     Ad adDTOtoAd(AdDto adDTO);
-
-
 }
 

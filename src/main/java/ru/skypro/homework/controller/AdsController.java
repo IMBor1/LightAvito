@@ -8,6 +8,7 @@ import ru.skypro.homework.dto.ads.AdDto;
 import ru.skypro.homework.dto.ads.AdsDto;
 import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
+import ru.skypro.homework.service.impl.AdServiceImpl;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -16,29 +17,37 @@ import ru.skypro.homework.dto.ads.ExtendedAdDto;
 @RequiredArgsConstructor
 public class AdsController {
 
+    private final AdServiceImpl adService;
+
+
     @GetMapping
     public ResponseEntity<AdsDto> findAllAds() {
-        return ResponseEntity.ok().build();
+        AdsDto adsDto = adService.getAllAds();
+        return ResponseEntity.ok(adsDto);
     }
 
     @PostMapping
     public ResponseEntity<AdDto> createAd(@RequestBody AdDto adDTO) {
-        return ResponseEntity.ok().build();
+        AdDto adDto = adService.saveAd(adDTO);
+        return ResponseEntity.ok(adDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ExtendedAdDto> getAdInfo(@PathVariable Integer id) {
-        return ResponseEntity.ok().build();
+        ExtendedAdDto extendedAdDto = adService.getAdInfo(id);
+        return ResponseEntity.ok(extendedAdDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteAd(@PathVariable Integer id) {
+        adService.deleteAd(id);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<AdDto> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto createOrUpdateAd) {
-        return ResponseEntity.ok().build();
+        AdDto adDto = adService.updateInfoAd(id, createOrUpdateAd);
+        return ResponseEntity.ok(adDto);
     }
 
     @GetMapping("/me")
