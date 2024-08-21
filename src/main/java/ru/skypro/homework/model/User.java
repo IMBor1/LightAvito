@@ -2,6 +2,8 @@ package ru.skypro.homework.model;
 
 
 
+import ru.skypro.homework.dto.Role;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -17,12 +19,13 @@ import java.util.Objects;
     private String currentPassword;
     private String email;
     private String phone;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private String image;
-
-
 
     public User() {
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -30,7 +33,6 @@ import java.util.Objects;
         User user = (User) o;
         return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(currentPassword, user.currentPassword) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone) && Objects.equals(image, user.image);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(id, firstName, lastName, currentPassword, email, phone, image);
@@ -104,6 +106,16 @@ import java.util.Objects;
     public void setImage(String image) {
         this.image = image;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+
 }
 
 

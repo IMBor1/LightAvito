@@ -2,6 +2,8 @@ package ru.skypro.homework.dto.user;
 
 import lombok.Data;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.model.User;
+
 @Data
 public class GetUserInfoDto {
     private Integer id;

@@ -2,12 +2,16 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.user.UpdateUserDto;
 import ru.skypro.homework.dto.user.UpdateUserImageDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
+import ru.skypro.homework.service.AuthService;
+import ru.skypro.homework.service.impl.UserServiceImpl;
 
 @Slf4j
 @RestController
@@ -15,11 +19,13 @@ import ru.skypro.homework.dto.user.UserSetPasswordDto;
 @RequiredArgsConstructor
 @RequestMapping("users")
 public class UserController {
-    // private final UsersService usersService;
+     private final UserServiceImpl usersService;
 
     @PostMapping("/set_password")
-    public ResponseEntity<?> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto,
+                                         Authentication authentication) {
+        usersService.changeToPassword(userSetPasswordDto,authentication.name());
+       return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")
