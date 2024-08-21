@@ -20,4 +20,6 @@ public interface UserMapper {
     User UserToUpdateUserDto(UpdateUserDto updateUserDto);
     @Mapping(target = "avatar.filePath", source = "image")
     User UserToUpdateUserImageDto(UpdateUserImageDto updateUserImageDto);
+    User UserToUserSetPasswordDto(UserSetPasswordDto userSetPasswordDto);
+
 }
