@@ -1,6 +1,8 @@
 package ru.skypro.homework.model;
 
 
+import ru.skypro.homework.dto.Role;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -18,11 +20,11 @@ import java.util.Objects;
     private String phone;
     @OneToOne
     private Avatar avatar;
-
-
+    private Role role;
 
     public User() {
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -30,7 +32,6 @@ import java.util.Objects;
         User user = (User) o;
         return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(currentPassword, user.currentPassword) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone) && Objects.equals(avatar, user.avatar);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(id, firstName, lastName, currentPassword, email, phone, avatar);
@@ -99,8 +100,16 @@ import java.util.Objects;
     public Avatar getAvatar() {
         return avatar;
     }
+
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
+    }
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
 

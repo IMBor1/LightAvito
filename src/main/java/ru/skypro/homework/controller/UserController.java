@@ -58,15 +58,16 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
 
-        //@PatchMapping("/me/image")
-       // @Operation(summary = "Обновление аватара авторизованного пользователя")
-       // @ApiResponses({
-        //        @ApiResponse(responseCode = "200", description = "OK"),
-        //        @ApiResponse(responseCode = "401", description = "Unauthorized")
-        //})
-        //public ResponseEntity updateImage (@RequestBody UpdateUserImageDto updateUserImageDto){
-        //    return ResponseEntity.ok().build();
+        @PatchMapping("/me/image")
+        @Operation(summary = "Обновление аватара авторизованного пользователя")
+        @ApiResponses({
+                @ApiResponse(responseCode = "200", description = "OK"),
+                @ApiResponse(responseCode = "401", description = "Unauthorized")
+        })
+        public ResponseEntity updateImage (@RequestBody UpdateUserImageDto updateUserImageDto){
+            return ResponseEntity.ok().build();
         }
     }
 

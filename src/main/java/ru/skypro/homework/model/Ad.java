@@ -18,7 +18,8 @@ public class Ad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String image;
+    @OneToOne
+    private ImageAd image;
     private Integer price;
     private String title;
     private String description;

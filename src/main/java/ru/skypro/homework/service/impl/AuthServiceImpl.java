@@ -2,7 +2,6 @@ package ru.skypro.homework.service.impl;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
@@ -12,10 +11,10 @@ import ru.skypro.homework.service.AuthService;
 @Service
 public class AuthServiceImpl implements AuthService{
 
-    private final UserDetailsManager manager;
+    private final MyUserDetailsService manager;
     private final PasswordEncoder encoder;
 
-    public AuthServiceImpl(UserDetailsManager manager,
+    public AuthServiceImpl(MyUserDetailsService manager,
                            PasswordEncoder passwordEncoder) {
         this.manager = manager;
         this.encoder = passwordEncoder;
