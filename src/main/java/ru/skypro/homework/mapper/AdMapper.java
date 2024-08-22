@@ -5,6 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Mappings;
+import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.ads.AdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
 import ru.skypro.homework.model.Ad;
@@ -15,7 +16,8 @@ import java.util.List;
 public interface AdMapper {
     @Mappings({
             @Mapping(target = "author", source = "author.id"),
-            @Mapping(target = "pk", source = "id")
+            @Mapping(target = "pk", source = "id"),
+            @Mapping(target = "image", source = "image.filePath")
     })
     AdDto adToAdDTO(Ad ad);
 
@@ -26,12 +28,14 @@ public interface AdMapper {
             @Mapping(target = "authorFirstName", source = "author.firstName"),
             @Mapping(target = "authorLastName", source = "author.lastName"),
             @Mapping(target = "phone", source = "author.phone"),
-            @Mapping(target = "email", source = "author.email")
+            @Mapping(target = "email", source = "author.email"),
+            @Mapping(target = "image", source = "image.filePath")
     })
     ExtendedAdDto adToExtendedAd(Ad ad);
     @Mappings({
             @Mapping(target = "author.id", source = "author"),
-            @Mapping(target = "id", source = "pk")
+            @Mapping(target = "id", source = "pk"),
+            @Mapping(target = "image.filePath", source = "image")
     })
     Ad adDTOtoAd(AdDto adDTO);
 }

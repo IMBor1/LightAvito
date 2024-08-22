@@ -32,7 +32,6 @@ public class AdServiceImpl implements AdService {
     private String imageDir;
     private final AdRepository adRepository;
     private final AdMapper adMapper;
-
     private final ImageAdRepository imageAdRepository;
 
     public AdServiceImpl(AdRepository adRepository,
