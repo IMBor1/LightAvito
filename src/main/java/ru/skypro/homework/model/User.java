@@ -19,9 +19,11 @@ import java.util.Objects;
     private String currentPassword;
     private String email;
     private String phone;
+    @OneToOne
+    private Avatar avatar;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private String image;
+
 
     public User() {
     }
@@ -31,11 +33,12 @@ import java.util.Objects;
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(currentPassword, user.currentPassword) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone) && Objects.equals(image, user.image);
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(currentPassword, user.currentPassword) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone) && Objects.equals(avatar, user.avatar);
     }
+
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, currentPassword, email, phone, image);
+        return Objects.hash(id, firstName, lastName, currentPassword, email, phone, avatar);
     }
 
     @Override
@@ -47,7 +50,6 @@ import java.util.Objects;
                 ", currentPassword='" + currentPassword + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", image='" + image + '\'' +
                 '}';
     }
 
@@ -99,12 +101,19 @@ import java.util.Objects;
         this.phone = phone;
     }
 
-    public String getImage() {
-        return image;
+    public Avatar getAvatar() {
+        return avatar;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public Role getRole() {

@@ -1,6 +1,7 @@
 package ru.skypro.homework.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
@@ -17,8 +18,11 @@ public interface UserMapper {
     User UpdateUserDtoToUser(UpdateUserDto updateUserDto);
     User UserSetPasswordDtoToUser(UserSetPasswordDto userSetPasswordDto);
     UserSetPasswordDto UserToUserSetPasswordDto(User user);
-    UpdateUserImageDto UserToUpdateUserImageDto(User user);
-    User UpdateUserImageDtoToUser(UpdateUserImageDto updateUserImageDto);
+
     GetUserInfoDto UserToGetUserInfo(User user);
     User GetUserInfoToUser(GetUserInfoDto getUserInfoDto);
+    @Mapping(target = "image", source = "avatar.filePath")
+    UpdateUserImageDto UpdateUserImageDtoToUser(User user);
+    @Mapping(target = "avatar.filePath", source = "image")
+    User UserToUpdateUserImageDto(UpdateUserImageDto updateUserImageDto);
 }

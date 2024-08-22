@@ -4,7 +4,7 @@ import lombok.Data;
 import ru.skypro.homework.model.User;
 
 @Data
-public class Register {
+public class RegisterDto {
 
     private String username;
     private String password;
