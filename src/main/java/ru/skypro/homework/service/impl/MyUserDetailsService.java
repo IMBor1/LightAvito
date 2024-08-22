@@ -6,8 +6,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
+
+import java.util.stream.Collectors;
 
 @Service
 public class MyUserDetailsService implements UserDetailsManager {
@@ -29,12 +32,17 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public void createUser(UserDetails user) {
-
+        User user1 = new User();
+        user1.setCurrentPassword(user.getPassword());
+        user1.setEmail(user.getUsername());
+        user1.setRole(Role.valueOf(user.getAuthorities().stream().findFirst().orElseThrow().getAuthority()));
+        userRepository.save(user1);
     }
 
     @Override
     public void updateUser(UserDetails user) {
-
+//        User userEdit = userRepository.findByEmail(user.getUsername());
+//        userEdit.setFirstName(user.);
     }
 
     @Override
@@ -54,7 +62,7 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public boolean userExists(String username) {
-        return false;
+        return true;
     }
 }
 

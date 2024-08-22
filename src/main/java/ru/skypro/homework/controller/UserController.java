@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
 import ru.skypro.homework.dto.user.UpdateUserImageDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
@@ -22,24 +23,22 @@ public class UserController {
      private final UserServiceImpl usersService;
 
     @PostMapping("/set_password")
-    public ResponseEntity<?> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto,
-                                         Authentication authentication) {
-        usersService.changeToPassword(userSetPasswordDto,authentication.name());
+    public ResponseEntity<?> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto) {
+        usersService.changeToPassword(userSetPasswordDto);
        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity getUser() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<GetUserInfoDto> infoAboutUser(Authentication authentication) {
+        GetUserInfoDto getUserInfoDto = usersService.infoAboutUser(authentication.name());
+        return ResponseEntity.ok(getUserInfoDto);
     }
 
     @PatchMapping("/me")
-    public ResponseEntity updateUser(@RequestBody UpdateUserDto updateUserDto) {
-        if (updateUserDto != null) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<UpdateUserDto> updateUser(@RequestBody UpdateUserDto updateUserDto,Authentication authentication) {
+UpdateUserDto updateUserDto1 = usersService.updateUser(updateUserDto, authentication.name());
+            return ResponseEntity.ok(updateUserDto1);
+
     }
 
     @PatchMapping("/me/image")

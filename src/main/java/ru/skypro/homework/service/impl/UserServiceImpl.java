@@ -1,8 +1,12 @@
 package ru.skypro.homework.service.impl;
 
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
+import ru.skypro.homework.dto.user.UpdateUserDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.model.User;
@@ -20,14 +24,23 @@ public class UserServiceImpl {
         this.userDetailsService = userDetailsService;
     }
 
-    public void changeToPassword(UserSetPasswordDto userSetPasswordDto,String name) {
+    public void changeToPassword(UserSetPasswordDto userSetPasswordDto) {
        userDetailsService.changePassword(userSetPasswordDto.getCurrentPassword(),userSetPasswordDto.getNewPassword());
 
     }
 
-    public User infoAboutUser(GetUserInfoDto getUserInfoDto) {
-        User user = userMapper.GetUserInfoToUser(getUserInfoDto);
-        return userRepository.save(user);
+    public GetUserInfoDto infoAboutUser(String name) {
+       return userMapper.UserToGetUserInfo(userRepository.findByName(name));
+
+    }
+
+    public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
+        User user = userRepository.findByEmail(email);
+        user.setFirstName(updateUserDto.getFirstName());
+        user.setLastName(updateUserDto.getLastName());
+        user.setPhone(updateUserDto.getPhone());
+        userRepository.save(user);
+        return userMapper.UserToUpdateUserDto(user);
     }
 
 }
