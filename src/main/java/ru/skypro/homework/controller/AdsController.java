@@ -105,6 +105,7 @@ public class AdsController {
     @PreAuthorize("hasRole( 'ADMIN' ) or @adServiceImpl.findAdById(id).author.userName.equals(authentication.name)")
     public ResponseEntity<byte[]> updateAdImage(@PathVariable Integer id,
                                                 @RequestBody MultipartFile multipartFile) throws IOException {
+
         ImageAd image = adService.updateAdImage(id, multipartFile);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(image.getMediaType()));
