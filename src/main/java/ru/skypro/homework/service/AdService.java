@@ -10,7 +10,7 @@ import ru.skypro.homework.model.ImageAd;
 import java.io.IOException;
 
 public interface AdService {
-    AdDto saveAd(AdDto adDTO);
+    AdDto saveAd(AdDto adDTO, MultipartFile file, String userName) throws IOException;
 
     AdsDto getAllAds();
 

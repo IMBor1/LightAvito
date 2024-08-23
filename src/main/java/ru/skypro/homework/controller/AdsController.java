@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.ads.AdDto;
@@ -47,8 +48,10 @@ public class AdsController {
             @ApiResponse(responseCode = "201", description = "Created"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<AdDto> createAd(@RequestBody AdDto adDTO) {
-        AdDto adDto = adService.saveAd(adDTO);
+    public ResponseEntity<AdDto> createAd(@RequestBody AdDto adDTO,
+                                          @RequestBody MultipartFile image,
+                                          Authentication authentication) throws IOException{
+        AdDto adDto = adService.saveAd(adDTO, image, authentication.getName());
         return ResponseEntity.ok(adDto);
     }
 

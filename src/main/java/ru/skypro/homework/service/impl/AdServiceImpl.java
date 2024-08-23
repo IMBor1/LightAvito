@@ -14,6 +14,7 @@ import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.ImageAdRepository;
+import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
 
 import java.io.*;
@@ -34,24 +35,31 @@ public class AdServiceImpl implements AdService {
     private final AdMapper adMapper;
     private final ImageAdRepository imageAdRepository;
 
+    private final UserRepository userRepository;
+
     public AdServiceImpl(AdRepository adRepository,
                          AdMapper adMapper,
-                         ImageAdRepository imageAdRepository) {
+                         ImageAdRepository imageAdRepository, UserRepository userRepository) {
         this.adRepository = adRepository;
         this.adMapper = adMapper;
         this.imageAdRepository = imageAdRepository;
+        this.userRepository = userRepository;
     }
 
     /**
      * Сохранение объявления.
      * @param adDTO DTO объявления
+     * @param file Файл фотографии объявления
+     * @param userName Имя пользователя или емейл
      * @return объект DTO {@link AdDto}
      */
     @Override
-    public AdDto saveAd(AdDto adDTO) {
-        Ad ad = adMapper.adDTOtoAd(adDTO);
-        Ad adSave = adRepository.save(ad);
-        return adMapper.adToAdDTO(adSave);
+    public AdDto saveAd(AdDto adDTO, MultipartFile file, String userName) throws IOException {
+        Ad ad = adRepository.save(adMapper.adDTOtoAd(adDTO));
+        ad.setAuthor(userRepository.findByEmail(userName));
+        ad.setImage(updateAdImage(ad.getId(),file));
+        adRepository.save(ad);
+        return adMapper.adToAdDTO(ad);
     }
 
     /**
@@ -116,6 +124,13 @@ public class AdServiceImpl implements AdService {
         return adsDto;
     }
 
+    /**
+     * Созранеет или меняет фотографию в объявлении.
+     * @param id айди объявления
+     * @param file файл объявления {@link MultipartFile}
+     * @return Объект класса {@link ImageAd}
+     * @throws IOException
+     */
     @Override
     public ImageAd updateAdImage(Integer id, MultipartFile file) throws IOException {
         Ad ad = adRepository.getReferenceById(id);

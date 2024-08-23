@@ -33,9 +33,9 @@ public interface AdMapper {
     })
     ExtendedAdDto adToExtendedAd(Ad ad);
     @Mappings({
-            @Mapping(target = "author.id", source = "author"),
+            @Mapping(target = "author", ignore = true),
             @Mapping(target = "id", source = "pk"),
-            @Mapping(target = "image.filePath", source = "image")
+            @Mapping(target = "image", ignore = true)
     })
     Ad adDTOtoAd(AdDto adDTO);
 }
