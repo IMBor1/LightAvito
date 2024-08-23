@@ -20,7 +20,7 @@ import ru.skypro.homework.dto.ads.AdsDto;
 import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
 import ru.skypro.homework.model.ImageAd;
-import ru.skypro.homework.service.impl.AdServiceImpl;
+import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
 
@@ -31,7 +31,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AdsController {
 
-    private final AdServiceImpl adService;
+    private final AdService adService;
 
     @Operation(summary = "Получение всех объявлений")
     @ApiResponses({

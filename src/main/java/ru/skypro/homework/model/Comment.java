@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -19,8 +20,10 @@ public class Comment {
     private Integer id;
     @ManyToOne
     private User author;
-    private Integer createdAt;
+    private Timestamp createdAt;
     private String text;
+    @ManyToOne
+    private Ad ad;
 
     @Override
     public boolean equals(Object o) {
