@@ -8,6 +8,9 @@ import ru.skypro.homework.dto.comments.CommentDto;
 import ru.skypro.homework.dto.comments.CreateOrUpdateCommentDto;
 import ru.skypro.homework.model.Comment;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -19,6 +22,9 @@ public interface CommentMapper {
             @Mapping(target = "authorFirstName", source = "author.firstName")
     })
     CommentDto commentToCommentDTO(Comment comment);
+
+
+
     List<CommentDto> commentsToCommentsDTO(List<Comment> comments);
     CreateOrUpdateCommentDto commentToCreateOrUpdateCommentDto(Comment comment);
 

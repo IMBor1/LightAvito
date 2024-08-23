@@ -1,4 +1,4 @@
 package ru.skypro.homework.service;
 
-public interface UsersService {
+public interface UserService {
 }
