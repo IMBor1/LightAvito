@@ -19,7 +19,8 @@ public interface CommentMapper {
             @Mapping(target = "pk", source = "id"),
             @Mapping(target = "author", source = "author.id"),
             @Mapping(target = "authorImage", source = "author.avatar.filePath"),
-            @Mapping(target = "authorFirstName", source = "author.firstName")
+            @Mapping(target = "authorFirstName", source = "author.firstName"),
+            @Mapping(target = "createdAt", source = "createdAt.time")
     })
     CommentDto commentToCommentDTO(Comment comment);
 
@@ -28,9 +29,5 @@ public interface CommentMapper {
     List<CommentDto> commentsToCommentsDTO(List<Comment> comments);
     CreateOrUpdateCommentDto commentToCreateOrUpdateCommentDto(Comment comment);
 
-    @Mappings({
-            @Mapping(target = "id", source = "pk"),
-            @Mapping(target = "author.id", source = "author")
-    })
-    Comment commentDTOToComment(CommentDto commentDto);
+
 }
