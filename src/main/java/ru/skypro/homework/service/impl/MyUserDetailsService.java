@@ -50,7 +50,7 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     }
 
-    @Override
+   /* @Override
     public void changePassword(String oldPassword, String newPassword) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userByEmail = userRepository.findByEmail(auth.getName());
@@ -58,8 +58,23 @@ public class MyUserDetailsService implements UserDetailsManager {
             userByEmail.setCurrentPassword(newPassword);
         }
         userRepository.save(userByEmail);
-    }
+    }*/
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userByEmail = userRepository.findByEmail(auth.getName());
 
+        if (userByEmail != null) {
+            if (userByEmail.getCurrentPassword().equals(oldPassword)) {
+                userByEmail.setCurrentPassword(newPassword);
+                userRepository.save(userByEmail);
+            } else {
+                throw new IllegalArgumentException("Старый пароль неверен");
+            }
+        } else {
+            return;
+        }
+    }
     @Override
     public boolean userExists(String username) {
         return true;
