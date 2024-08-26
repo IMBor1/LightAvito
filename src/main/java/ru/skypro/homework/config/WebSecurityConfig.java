@@ -16,7 +16,7 @@ import ru.skypro.homework.service.impl.MyUserDetailsService;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
