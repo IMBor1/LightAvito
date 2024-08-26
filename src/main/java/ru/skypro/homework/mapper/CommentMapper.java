@@ -29,5 +29,4 @@ public interface CommentMapper {
     List<CommentDto> commentsToCommentsDTO(List<Comment> comments);
     CreateOrUpdateCommentDto commentToCreateOrUpdateCommentDto(Comment comment);
 
-
 }
