@@ -3,9 +3,9 @@ package ru.skypro.homework.service.impl;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.RegisterDto;
+import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.service.AuthService;
 
 @Service
@@ -13,11 +13,17 @@ public class AuthServiceImpl implements AuthService{
 
     private final MyUserDetailsService manager;
     private final PasswordEncoder encoder;
+    private final UserMapper userMapper;
+    private final UserServiceImpl userService;
 
     public AuthServiceImpl(MyUserDetailsService manager,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           UserMapper userMapper,
+                           UserServiceImpl userService) {
         this.manager = manager;
         this.encoder = passwordEncoder;
+        this.userMapper = userMapper;
+        this.userService = userService;
     }
 
     @Override
@@ -41,6 +47,7 @@ public class AuthServiceImpl implements AuthService{
                         .username(register.getUsername())
                         .roles(register.getRole().name())
                         .build());
+        userService.updateUser(userMapper.registerToUpdateUserDto(register), register.getUsername());
         return true;
     }
 

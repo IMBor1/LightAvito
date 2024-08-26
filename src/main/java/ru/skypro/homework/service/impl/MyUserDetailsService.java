@@ -35,19 +35,27 @@ public class MyUserDetailsService implements UserDetailsManager {
         User user1 = new User();
         user1.setCurrentPassword(user.getPassword());
         user1.setEmail(user.getUsername());
-        user1.setRole(Role.valueOf(user.getAuthorities().stream().findFirst().orElseThrow().getAuthority()));
+        user1.setRole(Role.valueOf(
+                user.getAuthorities()
+                        .stream()
+                        .findFirst()
+                        .orElseThrow()
+                        .getAuthority()
+                        .replace("ROLE_","")));
         userRepository.save(user1);
     }
 
     @Override
     public void updateUser(UserDetails user) {
-//        User userEdit = userRepository.findByEmail(user.getUsername());
-//        userEdit.setFirstName(user.);
+        User userEdit = userRepository.findByEmail(user.getUsername());
+        userEdit.setEmail(user.getUsername());
+        userRepository.save(userEdit);
     }
 
     @Override
     public void deleteUser(String username) {
-
+        User userToDelete = userRepository.findByEmail(username);
+        userRepository.delete(userToDelete);
     }
 
     @Override
@@ -62,7 +70,7 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public boolean userExists(String username) {
-        return true;
+        return userRepository.findByEmail(username) != null;
     }
 }
 

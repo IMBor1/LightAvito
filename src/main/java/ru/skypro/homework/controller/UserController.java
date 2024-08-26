@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
-import ru.skypro.homework.dto.user.UpdateUserImageDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
 import ru.skypro.homework.model.Avatar;
-import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.service.impl.UserServiceImpl;
 
 import java.io.IOException;
@@ -52,7 +50,7 @@ public class UserController {
             )
     })
     @GetMapping("/me")
-    public ResponseEntity<GetUserInfoDto> infoAboutUser(Authentication authentication) {
+    public ResponseEntity<GetUserInfoDto> infoAboutUser() {
         GetUserInfoDto getUserInfoDto = usersService.infoAboutUser(authentication.name());
         return ResponseEntity.ok(getUserInfoDto);
     }
