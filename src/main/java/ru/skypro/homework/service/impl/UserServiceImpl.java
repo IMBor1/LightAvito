@@ -14,13 +14,14 @@ import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 
+import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
-
+@Transactional
 @Service
 public class UserServiceImpl implements UserService {
     @Value("${path.to.image-avatar.folder}")
@@ -36,18 +37,21 @@ public class UserServiceImpl implements UserService {
         this.userDetailsService = userDetailsService;
         this.avatarRepository = avatarRepository;
     }
-@Override
+
+    @Override
     public void changeToPassword(UserSetPasswordDto userSetPasswordDto) {
-       userDetailsService.changePassword(userSetPasswordDto.getCurrentPassword(),userSetPasswordDto.getNewPassword());
+        userDetailsService.changePassword(userSetPasswordDto.getCurrentPassword(), userSetPasswordDto.getNewPassword());
 
     }
-@Override
+
+    @Override
     public GetUserInfoDto infoAboutUser(String name) {
-       return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow());
+        return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow());
 
     }
-@Override
-    public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
+
+    @Override
+    public UpdateUserDto updateUser(UpdateUserDto updateUserDto, String email) {
         User user = userRepository.findByEmail(email).orElseThrow();
         user.setFirstName(updateUserDto.getFirstName());
         user.setLastName(updateUserDto.getLastName());
@@ -55,7 +59,8 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return userMapper.UserToUpdateUserDto(user);
     }
-@Override
+
+    @Override
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
 
