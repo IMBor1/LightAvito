@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
             ) {
                 bis.transferTo(bos);
             }
-            Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElseThrow();
+            Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElse(new Avatar());
             avatar.setUser(user);
             avatar.setFilePath(filePath.toString());
             avatar.setFileSize(file.getSize());

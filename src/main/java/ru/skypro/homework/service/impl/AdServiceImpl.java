@@ -145,7 +145,7 @@ public class AdServiceImpl implements AdService {
         ) {
             bis.transferTo(bos);
         }
-        ImageAd image = imageAdRepository.findImageAdByAdId(id).orElseThrow();
+        ImageAd image = imageAdRepository.findImageAdByAdId(id).orElse(new ImageAd());
         image.setAd(ad);
         image.setFilePath(filePath.toString());
         image.setFileSize(file.getSize());
