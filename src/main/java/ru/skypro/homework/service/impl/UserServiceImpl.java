@@ -1,18 +1,20 @@
 package ru.skypro.homework.service.impl;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
+import ru.skypro.homework.dto.user.UpdateUserImageDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.model.Avatar;
+import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.service.UserService;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -21,7 +23,7 @@ import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
     @Value("${path.to.image-avatar.folder}")
     private String imageDir;
     private final UserRepository userRepository;
@@ -35,17 +37,17 @@ public class UserServiceImpl {
         this.userDetailsService = userDetailsService;
         this.avatarRepository = avatarRepository;
     }
-
+@Override
     public void changeToPassword(UserSetPasswordDto userSetPasswordDto) {
        userDetailsService.changePassword(userSetPasswordDto.getCurrentPassword(),userSetPasswordDto.getNewPassword());
 
     }
-
+@Override
     public GetUserInfoDto infoAboutUser(String name) {
        return userMapper.UserToGetUserInfo(userRepository.findByEmail(name));
 
     }
-
+@Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
         User user = userRepository.findByEmail(email);
         user.setFirstName(updateUserDto.getFirstName());
@@ -54,9 +56,9 @@ public class UserServiceImpl {
         userRepository.save(user);
         return userMapper.UserToUpdateUserDto(user);
     }
-
+@Override
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
-            User user = userRepository.findByEmail(authentication.getName());
+        User user = userRepository.findByEmail(authentication.getName());
 
             Path filePath = Path.of(imageDir, user.getId() + "." + getExtension(file.getOriginalFilename()));
             Files.createDirectories(filePath.getParent());

@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
@@ -51,14 +50,13 @@ public class UserController {
             )
     })
     @GetMapping("/me")
-    public ResponseEntity<GetUserInfoDto> infoAboutUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        GetUserInfoDto getUserInfoDto = usersService.infoAboutUser(auth.getName());
+    public ResponseEntity<GetUserInfoDto> infoAboutUser(org.springframework.security.core.Authentication authentication) {
+        GetUserInfoDto getUserInfoDto = usersService.infoAboutUser(authentication.getName());
         return ResponseEntity.ok(getUserInfoDto);
     }
 
         @PatchMapping("/me")
-        public ResponseEntity<UpdateUserDto> updateUser (@RequestBody UpdateUserDto updateUserDto, Authentication
+        public ResponseEntity<UpdateUserDto> updateUser (@RequestBody UpdateUserDto updateUserDto, org.springframework.security.core.Authentication
         authentication){
             UpdateUserDto updateUserDto1 = usersService.updateUser(updateUserDto, authentication.getName());
             return ResponseEntity.ok(updateUserDto1);

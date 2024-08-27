@@ -48,10 +48,10 @@ public class AdsController {
             @ApiResponse(responseCode = "201", description = "Created"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<AdDto> createAd(@RequestBody AdDto adDTO,
-                                          @RequestBody MultipartFile image,
+    public ResponseEntity<AdDto> createAd(@RequestPart AdDto properties,
+                                          @RequestPart MultipartFile image,
                                           Authentication authentication) throws IOException{
-        AdDto adDto = adService.saveAd(adDTO, image, authentication.getName());
+        AdDto adDto = adService.saveAd(properties, image, authentication.getName());
         return ResponseEntity.ok(adDto);
     }
 

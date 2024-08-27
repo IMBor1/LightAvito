@@ -16,7 +16,6 @@ import ru.skypro.homework.service.impl.MyUserDetailsService;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
 public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
@@ -28,17 +27,6 @@ public class WebSecurityConfig {
             "/register"
     };
 
-//    @Bean
-//    public MyUserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-//        UserDetails user =
-//                User.builder()
-//                        .username("user@gmail.com")
-//                        .password("password")
-//                        .passwordEncoder(passwordEncoder::encode)
-//                        .roles(Role.USER.name())
-//                        .build();
-//        return new MyUserDetailsService(user);
-//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
