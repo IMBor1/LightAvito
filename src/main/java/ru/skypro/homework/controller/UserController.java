@@ -5,11 +5,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
@@ -51,14 +52,15 @@ public class UserController {
     })
     @GetMapping("/me")
     public ResponseEntity<GetUserInfoDto> infoAboutUser() {
-        GetUserInfoDto getUserInfoDto = usersService.infoAboutUser(authentication.name());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        GetUserInfoDto getUserInfoDto = usersService.infoAboutUser(auth.getName());
         return ResponseEntity.ok(getUserInfoDto);
     }
 
         @PatchMapping("/me")
         public ResponseEntity<UpdateUserDto> updateUser (@RequestBody UpdateUserDto updateUserDto, Authentication
         authentication){
-            UpdateUserDto updateUserDto1 = usersService.updateUser(updateUserDto, authentication.name());
+            UpdateUserDto updateUserDto1 = usersService.updateUser(updateUserDto, authentication.getName());
             return ResponseEntity.ok(updateUserDto1);
 
         }

@@ -1,16 +1,15 @@
 package ru.skypro.homework.service.impl;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
-import ru.skypro.homework.dto.user.UpdateUserImageDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.model.Avatar;
-import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -57,7 +56,7 @@ public class UserServiceImpl {
     }
 
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
-        User user = userRepository.findByEmail(authentication.name());
+            User user = userRepository.findByEmail(authentication.getName());
 
             Path filePath = Path.of(imageDir, user.getId() + "." + getExtension(file.getOriginalFilename()));
             Files.createDirectories(filePath.getParent());
