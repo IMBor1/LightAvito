@@ -14,6 +14,7 @@ import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.service.UserService;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -22,7 +23,7 @@ import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
     @Value("${path.to.image-avatar.folder}")
     private String imageDir;
     private final UserRepository userRepository;
@@ -36,17 +37,17 @@ public class UserServiceImpl {
         this.userDetailsService = userDetailsService;
         this.avatarRepository = avatarRepository;
     }
-
+@Override
     public void changeToPassword(UserSetPasswordDto userSetPasswordDto) {
        userDetailsService.changePassword(userSetPasswordDto.getCurrentPassword(),userSetPasswordDto.getNewPassword());
 
     }
-
+@Override
     public GetUserInfoDto infoAboutUser(String name) {
        return userMapper.UserToGetUserInfo(userRepository.findByEmail(name));
 
     }
-
+@Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
         User user = userRepository.findByEmail(email);
         user.setFirstName(updateUserDto.getFirstName());
@@ -55,7 +56,7 @@ public class UserServiceImpl {
         userRepository.save(user);
         return userMapper.UserToUpdateUserDto(user);
     }
-
+@Override
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
         User user = userRepository.findByEmail(authentication.getName());
 

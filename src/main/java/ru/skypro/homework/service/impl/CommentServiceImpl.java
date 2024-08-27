@@ -11,12 +11,13 @@ import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.service.CommentService;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Service
-public class CommentServiceImpl {
+public class CommentServiceImpl implements CommentService {
 
     private final AdRepository adRepository;
     private final CommentRepository commentRepository;
@@ -36,6 +37,7 @@ public class CommentServiceImpl {
      * @param id айди объявления
      * @return объект {@link CommentsDto} список коментариев и их количество
      */
+    @Override
     public CommentsDto getComments(Integer id) {
         List<Comment> comments = commentRepository.findAllByAdId(id);
         CommentsDto commentsDto = new CommentsDto();
@@ -51,6 +53,7 @@ public class CommentServiceImpl {
      * @param userName имя пользователя
      * @return информация о коментарии {@link CommentDto}
      */
+    @Override
     public CommentDto setComment(Integer adId, CreateOrUpdateCommentDto createOrUpdateCommentDto, String userName) {
         Ad ad = adRepository.getReferenceById(adId);
         User user = userRepository.findByEmail(userName);
@@ -70,6 +73,7 @@ public class CommentServiceImpl {
      * @param adId айди оюъявления
      * @param commentId айди коментария
      */
+    @Override
     public void deleteComment(Integer adId, Integer commentId) {
         Ad ad = adRepository.getReferenceById(adId);
         Comment comment = commentRepository.getReferenceById(commentId);
@@ -85,6 +89,7 @@ public class CommentServiceImpl {
      * @param createOrUpdateCommentDto текст комментария {@link CreateOrUpdateCommentDto}
      * @return информатия о комментарии {@link CommentDto}
      */
+    @Override
     public CommentDto updateComment(Integer adId,
                                     Integer commentId,
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto) {

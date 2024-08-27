@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.comments.CommentDto;
 import ru.skypro.homework.dto.comments.CommentsDto;
 import ru.skypro.homework.dto.comments.CreateOrUpdateCommentDto;
+import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.impl.CommentServiceImpl;
 
 @Slf4j
@@ -19,7 +20,7 @@ import ru.skypro.homework.service.impl.CommentServiceImpl;
 @RequestMapping("/ads")
 public class CommentsController {
 
-    private final CommentServiceImpl commentService;
+    private final CommentService commentService;
 
 
     @GetMapping("/{id}/comments")
@@ -49,7 +50,7 @@ public class CommentsController {
             summary = "Удаление комментария",
             tags = "Комментарии"
     )
-    public ResponseEntity<?> deleteComment(@PathVariable Integer adId,
+    public ResponseEntity deleteComment(@PathVariable Integer adId,
                                            @PathVariable Integer commentId) {
         commentService.deleteComment(adId,commentId);
         return ResponseEntity.ok().build();
