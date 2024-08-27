@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto setComment(Integer adId, CreateOrUpdateCommentDto createOrUpdateCommentDto, String userName) {
         Ad ad = adRepository.getReferenceById(adId);
-        User user = userRepository.findByEmail(userName);
+        User user = userRepository.findByEmail(userName).orElseThrow();
         Comment comment = new Comment();
         comment.setAd(ad);
         comment.setText(createOrUpdateCommentDto.getText());

@@ -23,10 +23,7 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException(email);
-        }
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         return new MyUserPrincipal(user);
     }
 
@@ -47,21 +44,21 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public void updateUser(UserDetails user) {
-        User userEdit = userRepository.findByEmail(user.getUsername());
+        User userEdit = userRepository.findByEmail(user.getUsername()).orElseThrow();
         userEdit.setEmail(user.getUsername());
         userRepository.save(userEdit);
     }
 
     @Override
     public void deleteUser(String username) {
-        User userToDelete = userRepository.findByEmail(username);
+        User userToDelete = userRepository.findByEmail(username).orElseThrow();
         userRepository.delete(userToDelete);
     }
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User userByEmail = userRepository.findByEmail(auth.getName());
+        User userByEmail = userRepository.findByEmail(auth.getName()).orElseThrow();
         if (userByEmail.getCurrentPassword().equals(oldPassword)) {
             userByEmail.setCurrentPassword(newPassword);
         }
@@ -70,7 +67,7 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public boolean userExists(String username) {
-        return userRepository.findByEmail(username) != null;
+        return userRepository.findByEmail(username).isPresent();
     }
 }
 

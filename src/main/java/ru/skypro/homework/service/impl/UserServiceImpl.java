@@ -44,12 +44,12 @@ public class UserServiceImpl implements UserService {
     }
 @Override
     public GetUserInfoDto infoAboutUser(String name) {
-       return userMapper.UserToGetUserInfo(userRepository.findByEmail(name));
+       return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow());
 
     }
 @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).orElseThrow();
         user.setFirstName(updateUserDto.getFirstName());
         user.setLastName(updateUserDto.getLastName());
         user.setPhone(updateUserDto.getPhone());
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 @Override
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
-        User user = userRepository.findByEmail(authentication.getName());
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
 
             Path filePath = Path.of(imageDir, user.getId() + "." + getExtension(file.getOriginalFilename()));
             Files.createDirectories(filePath.getParent());
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
             ) {
                 bis.transferTo(bos);
             }
-            Avatar avatar = avatarRepository.findImageByUserId(user.getId());
+            Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElseThrow();
             avatar.setUser(user);
             avatar.setFilePath(filePath.toString());
             avatar.setFileSize(file.getSize());
