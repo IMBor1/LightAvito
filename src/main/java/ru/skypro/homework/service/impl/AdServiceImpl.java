@@ -56,7 +56,7 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdDto saveAd(AdDto adDTO, MultipartFile file, String userName) throws IOException {
         Ad ad = adRepository.save(adMapper.adDTOtoAd(adDTO));
-        ad.setAuthor(userRepository.findByEmail(userName));
+        ad.setAuthor(userRepository.findByEmail(userName).orElseThrow());
         ad.setImage(updateAdImage(ad.getId(),file));
         adRepository.save(ad);
         return adMapper.adToAdDTO(ad);

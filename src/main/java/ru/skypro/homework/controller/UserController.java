@@ -19,6 +19,7 @@ import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.service.impl.UserServiceImpl;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @RestController

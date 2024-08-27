@@ -2,7 +2,6 @@ package ru.skypro.homework.model;
 
 
 
-import org.mapstruct.EnumMapping;
 import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;

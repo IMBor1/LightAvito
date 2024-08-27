@@ -6,11 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
-import ru.skypro.homework.dto.user.UpdateUserImageDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.model.Avatar;
-import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -19,6 +17,7 @@ import ru.skypro.homework.service.UserService;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -44,12 +43,12 @@ public class UserServiceImpl implements UserService {
     }
 @Override
     public GetUserInfoDto infoAboutUser(String name) {
-       return userMapper.UserToGetUserInfo(userRepository.findByEmail(name));
+       return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow());
 
     }
 @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).orElseThrow();
         user.setFirstName(updateUserDto.getFirstName());
         user.setLastName(updateUserDto.getLastName());
         user.setPhone(updateUserDto.getPhone());
@@ -58,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 @Override
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
-        User user = userRepository.findByEmail(authentication.getName());
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
 
             Path filePath = Path.of(imageDir, user.getId() + "." + getExtension(file.getOriginalFilename()));
             Files.createDirectories(filePath.getParent());
@@ -71,7 +70,7 @@ public class UserServiceImpl implements UserService {
             ) {
                 bis.transferTo(bos);
             }
-            Avatar avatar = avatarRepository.findImageByUserId(user.getId());
+            Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElseThrow();
             avatar.setUser(user);
             avatar.setFilePath(filePath.toString());
             avatar.setFileSize(file.getSize());

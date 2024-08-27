@@ -8,6 +8,7 @@ import ru.skypro.homework.dto.user.UserSetPasswordDto;
 import ru.skypro.homework.model.Avatar;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public interface UserService {
     public void changeToPassword(UserSetPasswordDto userSetPasswordDto);
