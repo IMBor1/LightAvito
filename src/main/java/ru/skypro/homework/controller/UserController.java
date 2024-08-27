@@ -16,6 +16,7 @@ import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
 import ru.skypro.homework.model.Avatar;
+import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.service.impl.UserServiceImpl;
 
 import java.io.IOException;
@@ -69,13 +70,9 @@ public class UserController {
                 @ApiResponse(responseCode = "200", description = "OK"),
                 @ApiResponse(responseCode = "401", description = "Unauthorized")
         })
-        public ResponseEntity<byte[]> updateImage (Authentication authentication,
-                                                   @RequestBody MultipartFile multipartFile) throws IOException{
-            Avatar avatar = usersService.updateImage(authentication, multipartFile);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
-            headers.setContentLength(avatar.getData().length);
-            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
+        public void updateImage (Authentication authentication, @RequestBody MultipartFile image) throws IOException{
+            usersService.updateImage(authentication, image);
         }
+
     }
 

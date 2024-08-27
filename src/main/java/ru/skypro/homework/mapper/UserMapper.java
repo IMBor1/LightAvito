@@ -19,7 +19,7 @@ public interface UserMapper {
     User UpdateUserDtoToUser(UpdateUserDto updateUserDto);
     User UserSetPasswordDtoToUser(UserSetPasswordDto userSetPasswordDto);
     UserSetPasswordDto UserToUserSetPasswordDto(User user);
-
+    @Mapping(target = "image", source = "avatar.filePath")
     GetUserInfoDto UserToGetUserInfo(User user);
     User GetUserInfoToUser(GetUserInfoDto getUserInfoDto);
     @Mapping(target = "image", source = "avatar.filePath")

@@ -17,6 +17,7 @@ import ru.skypro.homework.repository.ImageAdRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
 
+import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +29,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
  * Сервис для работы с объявлениями.
  */
 @Service
+@Transactional
 public class AdServiceImpl implements AdService {
     @Value("${path.to.ad-image.folder}")
     private String imageDir;

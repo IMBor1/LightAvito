@@ -16,6 +16,7 @@ import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 
+import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +24,7 @@ import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     @Value("${path.to.image-avatar.folder}")
     private String imageDir;
@@ -56,31 +58,33 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return userMapper.UserToUpdateUserDto(user);
     }
-@Override
+
+    @Override
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
 
-            Path filePath = Path.of(imageDir, user.getId() + "." + getExtension(file.getOriginalFilename()));
-            Files.createDirectories(filePath.getParent());
-            Files.deleteIfExists(filePath);
-            try (
-                    InputStream is = file.getInputStream();
-                    OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                    BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                    BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
-            ) {
-                bis.transferTo(bos);
-            }
-            Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElseThrow();
-            avatar.setUser(user);
-            avatar.setFilePath(filePath.toString());
-            avatar.setFileSize(file.getSize());
-            avatar.setMediaType(file.getContentType());
-            avatar.setData(file.getBytes());
-            user.setAvatar(avatar);
-            userRepository.save(user);
-            return avatar;
+        Path filePath = Path.of(imageDir, user.getId() + "." + getExtension(file.getOriginalFilename()));
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        try (
+                InputStream is = file.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
+        ) {
+            bis.transferTo(bos);
         }
+        Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElse(new Avatar());
+        avatar.setUser(user);
+        avatar.setFilePath(filePath.toString());
+        avatar.setFileSize(file.getSize());
+        avatar.setMediaType(file.getContentType());
+        avatar.setData(file.getBytes());
+        avatarRepository.save(avatar);
+        user.setAvatar(avatar);
+        userRepository.save(user);
+        return avatar;
+    }
 
     public String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
