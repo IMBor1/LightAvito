@@ -50,10 +50,9 @@ public class CommentsController {
             summary = "Удаление комментария",
             tags = "Комментарии"
     )
-    public ResponseEntity deleteComment(@PathVariable Integer adId,
+    public void deleteComment(@PathVariable Integer adId,
                                            @PathVariable Integer commentId) {
         commentService.deleteComment(adId,commentId);
-        return ResponseEntity.ok().build();
 
     }
 
