@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
+import ru.skypro.homework.dto.user.UpdateUserImageDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
 import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.repository.AvatarRepository;
@@ -73,18 +74,13 @@ public class UserController {
                 @ApiResponse(responseCode = "200", description = "OK"),
                 @ApiResponse(responseCode = "401", description = "Unauthorized")
         })
-        public ResponseEntity<byte[]> updateImage (Authentication authentication,
+        public void updateImage (Authentication authentication,
                                                    @RequestBody MultipartFile image) throws IOException{
-            Avatar avatar = usersService.updateImage(authentication, image);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
-            headers.setContentLength(avatar.getData().length);
-            return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
+            usersService.updateImage(authentication, image);
+
+
         }
-//    @GetMapping(value = "/images/{id}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, "image/*"})
-//    public byte[] getImage(@RequestParam Integer id) {
-//        avatarRepository.findImageByUserId(id)
-//        return entity.getImage();
-//    }
+
+
     }
 

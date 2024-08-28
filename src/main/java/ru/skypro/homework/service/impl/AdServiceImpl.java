@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.ads.AdDto;
 import ru.skypro.homework.dto.ads.AdsDto;
@@ -27,6 +28,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 /**
  * Сервис для работы с объявлениями.
  */
+@Transactional
 @Service
 public class AdServiceImpl implements AdService {
     @Value("${path.to.ad-image.folder}")
@@ -147,10 +149,11 @@ public class AdServiceImpl implements AdService {
         }
         ImageAd image = imageAdRepository.findImageAdByAdId(id).orElse(new ImageAd());
         image.setAd(ad);
-        image.setFilePath(filePath.toString());
+        image.setFilePath(filePath.toString().replace("." + getExtension(file.getOriginalFilename()),""));
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
         image.setData(file.getBytes());
+        imageAdRepository.save(image);
         ad.setImage(image);
         adRepository.save(ad);
         return image;

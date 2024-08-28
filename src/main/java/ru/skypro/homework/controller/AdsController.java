@@ -106,14 +106,11 @@ public class AdsController {
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole( 'ADMIN' ) or @adServiceImpl.findAdById(id).author.userName.equals(authentication.name)")
-    public ResponseEntity<byte[]> updateAdImage(@PathVariable Integer id,
-                                                @RequestBody MultipartFile multipartFile) throws IOException {
+    public void updateAdImage(@PathVariable Integer id,
+                                                @RequestBody MultipartFile image) throws IOException {
 
-        ImageAd image = adService.updateAdImage(id, multipartFile);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(image.getMediaType()));
-        headers.setContentLength(image.getData().length);
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(image.getData());
+        adService.updateAdImage(id, image);
+
     }
 
 }

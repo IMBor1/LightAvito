@@ -3,6 +3,7 @@ package ru.skypro.homework.service.impl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
@@ -14,7 +15,6 @@ import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 
-import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,11 +77,12 @@ public class UserServiceImpl implements UserService {
             }
             Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElse(new Avatar());
             avatar.setUser(user);
-            avatar.setFilePath(filePath.toString());
+            avatar.setFilePath(filePath.toString().replace("." + getExtension(file.getOriginalFilename()),""));
             avatar.setFileSize(file.getSize());
             avatar.setMediaType(file.getContentType());
             avatar.setData(file.getBytes());
-            user.setAvatar(avatar);
+        avatarRepository.save(avatar);
+        user.setAvatar(avatar);
             userRepository.save(user);
             return avatar;
         }

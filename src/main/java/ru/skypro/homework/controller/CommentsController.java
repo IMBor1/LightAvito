@@ -39,8 +39,8 @@ public class CommentsController {
             tags = "Комментарии"
     )
     public ResponseEntity<CommentDto> setComment(@PathVariable Integer id,
-                                                 @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto,
-                                                 @RequestBody Authentication authentication) {
+                                                 @RequestPart CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                                                 @RequestPart Authentication authentication) {
         CommentDto commentDto = commentService.setComment(id, createOrUpdateCommentDto, authentication.getName());
         return ResponseEntity.ok(commentDto);
     }
