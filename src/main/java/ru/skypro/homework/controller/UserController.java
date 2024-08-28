@@ -5,8 +5,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
-import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.service.impl.UserServiceImpl;
 
@@ -25,10 +22,10 @@ import java.io.IOException;
 @RestController
 @CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
-@RequestMapping("users")
+@RequestMapping("/users")
 public class UserController {
      private final UserServiceImpl usersService;
-
+    private final AvatarRepository avatarRepository;
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля")
     @ApiResponses({
@@ -36,7 +33,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
-    public ResponseEntity<?> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto) {
+    public ResponseEntity<?> setPassword(@RequestPart UserSetPasswordDto userSetPasswordDto) {
         usersService.changeToPassword(userSetPasswordDto);
        return ResponseEntity.ok().build();
     }
@@ -51,14 +48,13 @@ public class UserController {
             )
     })
     @GetMapping("/me")
-    public ResponseEntity<GetUserInfoDto> infoAboutUser(org.springframework.security.core.Authentication authentication) {
+    public ResponseEntity<GetUserInfoDto> infoAboutUser(Authentication authentication) {
         GetUserInfoDto getUserInfoDto = usersService.infoAboutUser(authentication.getName());
         return ResponseEntity.ok(getUserInfoDto);
     }
 
         @PatchMapping("/me")
-        public ResponseEntity<UpdateUserDto> updateUser (@RequestBody UpdateUserDto updateUserDto, org.springframework.security.core.Authentication
-        authentication){
+        public ResponseEntity<UpdateUserDto> updateUser (@RequestPart UpdateUserDto updateUserDto, Authentication authentication){
             UpdateUserDto updateUserDto1 = usersService.updateUser(updateUserDto, authentication.getName());
             return ResponseEntity.ok(updateUserDto1);
 
@@ -70,9 +66,11 @@ public class UserController {
                 @ApiResponse(responseCode = "200", description = "OK"),
                 @ApiResponse(responseCode = "401", description = "Unauthorized")
         })
-        public void updateImage (Authentication authentication, @RequestBody MultipartFile image) throws IOException{
+        public void updateImage (Authentication authentication, @RequestPart MultipartFile image) throws IOException{
             usersService.updateImage(authentication, image);
         }
+
+
 
     }
 

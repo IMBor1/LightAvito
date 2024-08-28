@@ -62,8 +62,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        String extension = "." + getExtension(file.getOriginalFilename());
 
-        Path filePath = Path.of(imageDir, user.getId() + "." + getExtension(file.getOriginalFilename()));
+        Path filePath = Path.of(imageDir, user.getId() + extension);
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
         try (
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
         }
         Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElse(new Avatar());
         avatar.setUser(user);
-        avatar.setFilePath(filePath.toString());
+        avatar.setFilePath(filePath.toString().replace(extension, ""));
         avatar.setFileSize(file.getSize());
         avatar.setMediaType(file.getContentType());
         avatar.setData(file.getBytes());

@@ -39,8 +39,8 @@ public class CommentsController {
             tags = "Комментарии"
     )
     public ResponseEntity<CommentDto> setComment(@PathVariable Integer id,
-                                                 @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto,
-                                                 @RequestBody Authentication authentication) {
+                                                 @RequestPart CreateOrUpdateCommentDto createOrUpdateCommentDto,
+                                                 @RequestPart Authentication authentication) {
         CommentDto commentDto = commentService.setComment(id, createOrUpdateCommentDto, authentication.getName());
         return ResponseEntity.ok(commentDto);
     }
@@ -64,7 +64,7 @@ public class CommentsController {
     @PreAuthorize("hasRole( 'ADMIN' ) or @commentServiceImpl.find(commentId).author.username.equals(authentication.name)")
     public ResponseEntity<CommentDto> updateComment(@PathVariable Integer adId,
                                         @PathVariable Integer commentId,
-                                        @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto) {
+                                        @RequestPart CreateOrUpdateCommentDto createOrUpdateCommentDto) {
         CommentDto commentDto = commentService.updateComment(adId, commentId, createOrUpdateCommentDto);
         return ResponseEntity.ok(commentDto);
     }

@@ -7,8 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +17,6 @@ import ru.skypro.homework.dto.ads.AdDto;
 import ru.skypro.homework.dto.ads.AdsDto;
 import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
-import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
@@ -93,7 +90,7 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<AdDto> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto createOrUpdateAd) {
+    public ResponseEntity<AdDto> updateAdInfo(@PathVariable Integer id, @RequestPart CreateOrUpdateAdDto createOrUpdateAd) {
         AdDto adDto = adService.updateInfoAd(id, createOrUpdateAd);
         return ResponseEntity.ok(adDto);
     }
@@ -104,16 +101,10 @@ public class AdsController {
         return ResponseEntity.ok(adsDto);
     }
 
-    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole( 'ADMIN' ) or @adServiceImpl.findAdById(id).author.userName.equals(authentication.name)")
-    public ResponseEntity<byte[]> updateAdImage(@PathVariable Integer id,
-                                                @RequestBody MultipartFile multipartFile) throws IOException {
 
-        ImageAd image = adService.updateAdImage(id, multipartFile);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(image.getMediaType()));
-        headers.setContentLength(image.getData().length);
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(image.getData());
+    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateAdImage(@PathVariable Integer id, @RequestPart MultipartFile image) throws IOException {
+        adService.updateAdImage(id, image);
     }
 
 }

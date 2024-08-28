@@ -14,10 +14,7 @@ public class ImageAd {
     private String filePath;
     private long fileSize;
     private String mediaType;
-    @Lob
-    @JsonIgnore
     private byte[] data;
     @OneToOne
-    @JsonIgnore
     private Ad ad;
 }

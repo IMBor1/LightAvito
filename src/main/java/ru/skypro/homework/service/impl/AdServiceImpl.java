@@ -136,6 +136,8 @@ public class AdServiceImpl implements AdService {
     @Override
     public ImageAd updateAdImage(Integer id, MultipartFile file) throws IOException {
         Ad ad = adRepository.getReferenceById(id);
+        String extension = "." + getExtension(file.getOriginalFilename());
+
         Path filePath = Path.of(imageDir, id + "." + getExtension(file.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -147,12 +149,13 @@ public class AdServiceImpl implements AdService {
         ) {
             bis.transferTo(bos);
         }
-        ImageAd image = imageAdRepository.findImageAdByAdId(id).orElseThrow();
+        ImageAd image = imageAdRepository.findImageAdByAdId(id).orElse(new ImageAd());
         image.setAd(ad);
-        image.setFilePath(filePath.toString());
+        image.setFilePath(filePath.toString().replace(extension, ""));
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
         image.setData(file.getBytes());
+        imageAdRepository.save(image);
         ad.setImage(image);
         adRepository.save(ad);
         return image;
