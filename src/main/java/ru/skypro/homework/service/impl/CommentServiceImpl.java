@@ -97,6 +97,7 @@ public class CommentServiceImpl implements CommentService {
      * @param createOrUpdateCommentDto текст комментария {@link CreateOrUpdateCommentDto}
      * @return информатия о комментарии {@link CommentDto}
      */
+    @Transactional
     @Override
     public CommentDto updateComment(Integer adId,
                                     Integer commentId,
@@ -104,6 +105,9 @@ public class CommentServiceImpl implements CommentService {
         Ad ad = adRepository.getReferenceById(adId);
         Comment comment = commentRepository.getReferenceById(commentId);
         comment.setText(createOrUpdateCommentDto.getText());
+        entityManager.createNativeQuery("DELETE FROM ad_comments WHERE comments_id = ?")
+                .setParameter(1, commentId)
+                .executeUpdate();
         commentRepository.save(comment);
         ad.setComment(comment);
         adRepository.save(ad);
