@@ -14,6 +14,7 @@ import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
 import ru.skypro.homework.repository.AvatarRepository;
+import ru.skypro.homework.service.impl.AvatarServiceImpl;
 import ru.skypro.homework.service.impl.UserServiceImpl;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ import java.io.IOException;
 @RequestMapping("/users")
 public class UserController {
      private final UserServiceImpl usersService;
-    private final AvatarRepository avatarRepository;
+    private final AvatarServiceImpl avatarService;
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля")
     @ApiResponses({
@@ -33,9 +34,8 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
-    public ResponseEntity<?> setPassword(@RequestPart UserSetPasswordDto userSetPasswordDto) {
+    public void setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto) {
         usersService.changeToPassword(userSetPasswordDto);
-       return ResponseEntity.ok().build();
     }
     @Operation(summary = "Получение информации об авторизованном пользователе")
     @ApiResponses({
@@ -54,7 +54,7 @@ public class UserController {
     }
 
         @PatchMapping("/me")
-        public ResponseEntity<UpdateUserDto> updateUser (@RequestPart UpdateUserDto updateUserDto, Authentication authentication){
+        public ResponseEntity<UpdateUserDto> updateUser (@RequestBody UpdateUserDto updateUserDto, Authentication authentication){
             UpdateUserDto updateUserDto1 = usersService.updateUser(updateUserDto, authentication.getName());
             return ResponseEntity.ok(updateUserDto1);
 
@@ -67,7 +67,7 @@ public class UserController {
                 @ApiResponse(responseCode = "401", description = "Unauthorized")
         })
         public void updateImage (Authentication authentication, @RequestPart MultipartFile image) throws IOException{
-            usersService.updateImage(authentication, image);
+            avatarService.updateImage(authentication, image);
         }
 
 

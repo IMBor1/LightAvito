@@ -7,23 +7,24 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import ru.skypro.homework.repository.AvatarRepository;
-import ru.skypro.homework.repository.ImageAdRepository;
+import ru.skypro.homework.service.AvatarService;
+import ru.skypro.homework.service.ImageAdService;
+import ru.skypro.homework.service.impl.ImageAdServiceImpl;
 
 @Slf4j
 @RestController
 @CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
 public class ImageController {
-    private final AvatarRepository avatarRepository;
-    private final ImageAdRepository imageAdRepository;
+    private final AvatarService avatarService;
+    private final ImageAdService imageAdService;
     @GetMapping(value = "/image-avatar/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, "image/*"})
     public byte[] getAvatar(@PathVariable Integer id) {
-        return avatarRepository.findImageByUserId(id).orElseThrow().getData();
+        return avatarService.getAvatar(id);
     }
     @GetMapping(value = "/image-ad/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, "image/*"})
     public byte[] getImageAd(@PathVariable Integer id) {
-        return imageAdRepository.findImageAdByAdId(id).orElseThrow().getData();
+        return imageAdService.getImageAd(id);
     }
 
 }

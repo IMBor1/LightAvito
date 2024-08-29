@@ -13,6 +13,8 @@ import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
 
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -24,12 +26,18 @@ public class CommentServiceImpl implements CommentService {
 
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
+    private final EntityManager entityManager;
 
-    public CommentServiceImpl(AdRepository adRepository, CommentRepository commentRepository, UserRepository userRepository, CommentMapper commentMapper) {
+    public CommentServiceImpl(AdRepository adRepository,
+                              CommentRepository commentRepository,
+                              UserRepository userRepository,
+                              CommentMapper commentMapper,
+                              EntityManager entityManager) {
         this.adRepository = adRepository;
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.commentMapper = commentMapper;
+        this.entityManager = entityManager;
     }
 
     /**
@@ -74,10 +82,15 @@ public class CommentServiceImpl implements CommentService {
      * @param commentId айди коментария
      */
     @Override
+    @Transactional
     public void deleteComment(Integer adId, Integer commentId) {
         Ad ad = adRepository.getReferenceById(adId);
         Comment comment = commentRepository.getReferenceById(commentId);
-        ad.getComments().remove(comment);
+
+        entityManager.createNativeQuery("DELETE FROM ad_comments WHERE comments_id = ?")
+                .setParameter(1, commentId)
+                .executeUpdate();
+
         adRepository.save(ad);
         commentRepository.deleteById(commentId);
     }
@@ -90,12 +103,18 @@ public class CommentServiceImpl implements CommentService {
      * @return информатия о комментарии {@link CommentDto}
      */
     @Override
+    @Transactional
     public CommentDto updateComment(Integer adId,
                                     Integer commentId,
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto) {
         Ad ad = adRepository.getReferenceById(adId);
         Comment comment = commentRepository.getReferenceById(commentId);
         comment.setText(createOrUpdateCommentDto.getText());
+
+        entityManager.createNativeQuery("DELETE FROM ad_comments WHERE comments_id = ?")
+                .setParameter(1, commentId)
+                .executeUpdate();
+
         commentRepository.save(comment);
         ad.setComment(comment);
         adRepository.save(ad);

@@ -24,32 +24,29 @@ import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
-    @Value("${path.to.image-avatar.folder}")
-    private String imageDir;
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final MyUserDetailsService userDetailsService;
-    private final AvatarRepository avatarRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, MyUserDetailsService userDetailsService, AvatarRepository avatarRepository) {
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, MyUserDetailsService userDetailsService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.userDetailsService = userDetailsService;
-        this.avatarRepository = avatarRepository;
     }
-@Override
+    @Override
     public void changeToPassword(UserSetPasswordDto userSetPasswordDto) {
        userDetailsService.changePassword(userSetPasswordDto.getCurrentPassword(),userSetPasswordDto.getNewPassword());
 
     }
-@Override
+    @Override
     public GetUserInfoDto infoAboutUser(String name) {
        return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow());
 
     }
-@Override
+    @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
         User user = userRepository.findByEmail(email).orElseThrow();
         user.setFirstName(updateUserDto.getFirstName());
@@ -57,37 +54,5 @@ public class UserServiceImpl implements UserService {
         user.setPhone(updateUserDto.getPhone());
         userRepository.save(user);
         return userMapper.UserToUpdateUserDto(user);
-    }
-
-    @Override
-    public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
-        String extension = "." + getExtension(file.getOriginalFilename());
-
-        Path filePath = Path.of(imageDir, user.getId() + extension);
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
-        try (
-                InputStream is = file.getInputStream();
-                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
-        ) {
-            bis.transferTo(bos);
-        }
-        Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElse(new Avatar());
-        avatar.setUser(user);
-        avatar.setFilePath(filePath.toString().replace(extension, ""));
-        avatar.setFileSize(file.getSize());
-        avatar.setMediaType(file.getContentType());
-        avatar.setData(file.getBytes());
-        avatarRepository.save(avatar);
-        user.setAvatar(avatar);
-        userRepository.save(user);
-        return avatar;
-    }
-
-    public String getExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 }

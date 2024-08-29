@@ -18,6 +18,7 @@ import ru.skypro.homework.dto.ads.AdsDto;
 import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
 import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.ImageAdService;
 
 import java.io.IOException;
 
@@ -29,6 +30,8 @@ import java.io.IOException;
 public class AdsController {
 
     private final AdService adService;
+
+    private final ImageAdService imageAdService;
 
     @Operation(summary = "Получение всех объявлений")
     @ApiResponses({
@@ -90,7 +93,7 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<AdDto> updateAdInfo(@PathVariable Integer id, @RequestPart CreateOrUpdateAdDto createOrUpdateAd) {
+    public ResponseEntity<AdDto> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto createOrUpdateAd) {
         AdDto adDto = adService.updateInfoAd(id, createOrUpdateAd);
         return ResponseEntity.ok(adDto);
     }
@@ -104,7 +107,7 @@ public class AdsController {
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateAdImage(@PathVariable Integer id, @RequestPart MultipartFile image) throws IOException {
-        adService.updateAdImage(id, image);
+        imageAdService.updateAdImage(id, image);
     }
 
 }
