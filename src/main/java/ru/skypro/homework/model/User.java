@@ -5,6 +5,7 @@ package ru.skypro.homework.model;
 import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -21,6 +22,8 @@ import java.util.Objects;
     private String phone;
     @OneToOne
     private Avatar avatar;
+    @OneToMany
+    private List<Comment> comments;
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -117,7 +120,13 @@ import java.util.Objects;
         this.role = role;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
 
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }
 
 
