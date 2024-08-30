@@ -106,7 +106,16 @@ public class AdsController {
 
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void updateAdImage(@PathVariable Integer id, @RequestPart MultipartFile image) throws IOException {
+    @PreAuthorize("hasRole('ADMIN') or @adsService.isAuthorAd(principal.username, #adId)")
+    @Operation(summary = "Обновление информации об объявлении")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = AdDto.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Not found")
+    })
+    public void updateAdImage(@PathVariable Integer id, @RequestBody MultipartFile image) throws IOException {
         imageAdService.updateAdImage(id, image);
     }
 

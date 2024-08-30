@@ -46,6 +46,7 @@ public class CommentsController {
     }
 
     @DeleteMapping("/{adId}/comments/{commentId}")
+    @PreAuthorize("hasRole( 'ADMIN' ) or @commentServiceImpl.find(commentId).author.username.equals(authentication.name)")
     @Operation(
             summary = "Удаление комментария",
             tags = "Комментарии"
