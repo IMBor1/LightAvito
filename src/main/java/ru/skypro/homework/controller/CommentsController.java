@@ -35,12 +35,12 @@ public class CommentsController {
 
     @PostMapping("/{id}/comments")
     @Operation(
-            summary = "Добавление комментария к обЪявлению",
+            summary = "Добавление комментария к объявлению",
             tags = "Комментарии"
     )
     public ResponseEntity<CommentDto> setComment(@PathVariable Integer id,
                                                  @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto,
-                                                  Authentication authentication) {
+                                                 Authentication authentication) {
         CommentDto commentDto = commentService.setComment(id, createOrUpdateCommentDto, authentication.getName());
         return ResponseEntity.ok(commentDto);
     }
@@ -51,7 +51,7 @@ public class CommentsController {
             tags = "Комментарии"
     )
     public void deleteComment(@PathVariable Integer adId,
-                                           @PathVariable Integer commentId) {
+                              @PathVariable Integer commentId) {
         commentService.deleteComment(adId,commentId);
 
     }

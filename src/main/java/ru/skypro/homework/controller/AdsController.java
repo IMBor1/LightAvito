@@ -7,8 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,8 +17,8 @@ import ru.skypro.homework.dto.ads.AdDto;
 import ru.skypro.homework.dto.ads.AdsDto;
 import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
-import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.ImageAdService;
 
 import java.io.IOException;
 
@@ -32,6 +30,8 @@ import java.io.IOException;
 public class AdsController {
 
     private final AdService adService;
+
+    private final ImageAdService imageAdService;
 
     @Operation(summary = "Получение всех объявлений")
     @ApiResponses({
@@ -104,13 +104,10 @@ public class AdsController {
         return ResponseEntity.ok(adsDto);
     }
 
+
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole( 'ADMIN' ) or @adServiceImpl.findAdById(id).author.userName.equals(authentication.name)")
-    public void updateAdImage(@PathVariable Integer id,
-                                                @RequestBody MultipartFile image) throws IOException {
-
-        adService.updateAdImage(id, image);
-
+    public void updateAdImage(@PathVariable Integer id, @RequestPart MultipartFile image) throws IOException {
+        imageAdService.updateAdImage(id, image);
     }
 
 }

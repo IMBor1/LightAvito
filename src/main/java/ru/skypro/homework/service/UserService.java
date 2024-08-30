@@ -14,6 +14,5 @@ public interface UserService {
     public void changeToPassword(UserSetPasswordDto userSetPasswordDto);
     public GetUserInfoDto infoAboutUser(String name);
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto, String email);
-    public Avatar updateImage(Authentication authentication, MultipartFile file)throws IOException;
 
 }

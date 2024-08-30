@@ -1,3 +1,3 @@
 databaseChangeLog:
   - include:
-      file: liquibase/scripts/LightAvito.sql
+      file: liquibase/scripts/LiteAvito.sql

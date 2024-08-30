@@ -56,4 +56,5 @@ public class Ad {
     public void setComment(Comment comment) {
         comments.add(comment);
     }
+
 }

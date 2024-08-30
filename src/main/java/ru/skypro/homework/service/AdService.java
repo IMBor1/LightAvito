@@ -22,9 +22,5 @@ public interface AdService {
 
     AdsDto findMyAds();
 
-    ImageAd updateAdImage(Integer id, MultipartFile file) throws IOException;
 
-    default String getExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
-    }
 }

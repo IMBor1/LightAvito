@@ -1,6 +1,5 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,16 +14,17 @@ import ru.skypro.homework.repository.UserRepository;
 @Service
 public class MyUserDetailsService implements UserDetailsManager {
 
-    private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
-    public MyUserDetailsService(UserRepository userRepository, PasswordEncoder encoder) {
-        this.userRepository = userRepository;
+    private final UserRepository userRepository;
+
+    public MyUserDetailsService(PasswordEncoder encoder, UserRepository userRepository) {
         this.encoder = encoder;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         return new MyUserPrincipal(user);
     }
@@ -40,7 +40,7 @@ public class MyUserDetailsService implements UserDetailsManager {
                         .findFirst()
                         .orElseThrow()
                         .getAuthority()
-                        .replace("ROLE_", "")));
+                        .replace("ROLE_","")));
         userRepository.save(user1);
     }
 
@@ -59,18 +59,20 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User userByEmail = userRepository.findByEmail(auth.getName()).orElseThrow();
-        UserDetails build = org.springframework.security.core.userdetails.User.builder()
-                .passwordEncoder(this.encoder::encode)
-                .password(newPassword)
-                .username(userByEmail.getEmail())
-                .roles(userByEmail.getRole().name())
-                .build();
+        User user = userRepository.findByEmail(auth.getName()).orElseThrow();
 
-        userByEmail.setCurrentPassword(build.getPassword());
+        UserDetails userDetails =
+               org.springframework.security.core.userdetails.User.builder()
+                       .passwordEncoder(this.encoder::encode)
+                       .password(newPassword)
+                       .username(user.getEmail())
+                       .roles(user.getRole().name())
+                       .build();
 
-        userRepository.save(userByEmail);
+        user.setCurrentPassword(userDetails.getPassword());
+        userRepository.save(user);
     }
 
     @Override
