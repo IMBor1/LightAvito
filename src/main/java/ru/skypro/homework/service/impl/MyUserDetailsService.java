@@ -1,29 +1,31 @@
 package ru.skypro.homework.service.impl;
 
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
 
-import java.util.stream.Collectors;
-
 @Service
 public class MyUserDetailsService implements UserDetailsManager {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
-    public MyUserDetailsService(UserRepository userRepository) {
+    public MyUserDetailsService(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException(email));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         return new MyUserPrincipal(user);
     }
 
@@ -38,7 +40,7 @@ public class MyUserDetailsService implements UserDetailsManager {
                         .findFirst()
                         .orElseThrow()
                         .getAuthority()
-                        .replace("ROLE_","")));
+                        .replace("ROLE_", "")));
         userRepository.save(user1);
     }
 
@@ -59,9 +61,15 @@ public class MyUserDetailsService implements UserDetailsManager {
     public void changePassword(String oldPassword, String newPassword) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userByEmail = userRepository.findByEmail(auth.getName()).orElseThrow();
-        if (userByEmail.getCurrentPassword().equals(oldPassword)) {
-            userByEmail.setCurrentPassword(newPassword);
-        }
+        UserDetails build = org.springframework.security.core.userdetails.User.builder()
+                .passwordEncoder(this.encoder::encode)
+                .password(newPassword)
+                .username(userByEmail.getEmail())
+                .roles(userByEmail.getRole().name())
+                .build();
+
+        userByEmail.setCurrentPassword(build.getPassword());
+
         userRepository.save(userByEmail);
     }
 

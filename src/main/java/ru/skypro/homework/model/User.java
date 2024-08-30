@@ -1,7 +1,6 @@
 package ru.skypro.homework.model;
 
 
-
 import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
@@ -11,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users")
- public class User {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -54,6 +53,10 @@ import java.util.Objects;
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 '}';
+    }
+
+    public User(String currentPassword) {
+
     }
 
     public Integer getId() {

@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final MyUserDetailsService userDetailsService;
     private final AvatarRepository avatarRepository;
 
+
     public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, MyUserDetailsService userDetailsService, AvatarRepository avatarRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
