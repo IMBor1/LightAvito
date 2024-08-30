@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,7 @@ public class UserController {
      private final UserServiceImpl usersService;
     private final AvatarServiceImpl avatarService;
     @PostMapping("/set_password")
+    @PreAuthorize("hasRole('ADMIN') or @userService.isUserName(principal.username, #email)")
     @Operation(summary = "Обновление пароля")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -52,8 +54,14 @@ public class UserController {
         GetUserInfoDto getUserInfoDto = usersService.infoAboutUser(authentication.getName());
         return ResponseEntity.ok(getUserInfoDto);
     }
-
+    @Operation(summary = "Обновление пользователя")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
         @PatchMapping("/me")
+    @PreAuthorize("hasRole('ADMIN') or @userService.isUserName(principal.username, #email)")
         public ResponseEntity<UpdateUserDto> updateUser (@RequestBody UpdateUserDto updateUserDto, Authentication authentication){
             UpdateUserDto updateUserDto1 = usersService.updateUser(updateUserDto, authentication.getName());
             return ResponseEntity.ok(updateUserDto1);
@@ -61,12 +69,13 @@ public class UserController {
         }
 
         @PatchMapping("/me/image")
-        @Operation(summary = "Обновление аватара авторизованного пользователя")
+        @PreAuthorize("hasRole('ADMIN') or @userService.isUserName(principal.username, #email)")
+        @Operation(summary = "Обновление аватара авторизованного пользователя.")
         @ApiResponses({
                 @ApiResponse(responseCode = "200", description = "OK"),
                 @ApiResponse(responseCode = "401", description = "Unauthorized")
         })
-        public void updateImage (Authentication authentication, @RequestPart MultipartFile image) throws IOException{
+        public void updateImage (Authentication authentication, @RequestBody MultipartFile image) throws IOException{
             avatarService.updateImage(authentication, image);
         }
     }
