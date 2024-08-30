@@ -1,2 +1,4 @@
-Для запуска фронта ввести строку
- docker run -p 3000:3000 --rm ghcr.io/dmitry-bizin/front-react-avito:v1.21
+Это проект по типу Авито, здесь можно размещать свои объявления, добавлять к ним фото, описание, а также оставлять комментарии. Можно в своем профиле поставить автар, сменить пароль и личные данные. Наш проект состоит из Frontenda и Backened. Для запуска Frontenda ввести строку: <b>docker run -p 3000:3000 --rm ghcr.io/dmitry-bizin/front-react-avito:v1.21</b>. Чтобы запустить приложение нужно перейти по URL: http://localhost:3000/.
+Проект использует принцим REST API. В нашем проекте есть описание при помощи JavaDoc. Основные контроллеры для взаимодействия с пользователем: AdsController(Взаимодействие с объявлениями), AuthController(Регистрация и авторизация), CommentsController(Работа с комментариями), ImageController(Работа с изображениями), UserController(Работа с аватаром пользователя).
+В проекте используются следующие технологии: Java 11, Spring Boot, Spring Security, JPA, PostgreSQL, Swagger, Liquibase, Maven, Git.
+ 
