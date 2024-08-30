@@ -59,12 +59,20 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User userByEmail = userRepository.findByEmail(auth.getName()).orElseThrow();
-        if (userByEmail.getCurrentPassword().equals(oldPassword)) {
-            userByEmail.setCurrentPassword(newPassword);
-        }
-        userRepository.save(userByEmail);
+        User user = userRepository.findByEmail(auth.getName()).orElseThrow();
+
+        UserDetails userDetails =
+               org.springframework.security.core.userdetails.User.builder()
+                       .passwordEncoder(this.encoder::encode)
+                       .password(newPassword)
+                       .username(user.getEmail())
+                       .roles(user.getRole().name())
+                       .build();
+
+        user.setCurrentPassword(userDetails.getPassword());
+        userRepository.save(user);
     }
 
     @Override
