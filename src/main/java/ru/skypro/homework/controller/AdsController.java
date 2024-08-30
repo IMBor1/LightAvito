@@ -97,7 +97,10 @@ public class AdsController {
         AdDto adDto = adService.updateInfoAd(id, createOrUpdateAd);
         return ResponseEntity.ok(adDto);
     }
-
+    @Operation(summary = "информация об объявлениях")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
     @GetMapping("/me")
     public ResponseEntity<AdsDto> findMyAds() {
         AdsDto adsDto = adService.findMyAds();
