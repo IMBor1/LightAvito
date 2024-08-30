@@ -22,7 +22,7 @@ public class ImageController {
     public byte[] getAvatar(@PathVariable Integer id) {
         return avatarService.getAvatar(id);
     }
-    @GetMapping(value = "/image-ad/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, "image/*"})
+    @GetMapping(value = "/image-ad/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, "image/*"})
     public byte[] getImageAd(@PathVariable Integer id) {
         return imageAdService.getImageAd(id);
     }
