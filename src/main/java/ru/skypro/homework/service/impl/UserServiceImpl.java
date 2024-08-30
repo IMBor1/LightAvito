@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public GetUserInfoDto infoAboutUser(String name) {
-       return userMapper.UserToGetUserInfo(userRepository.findByEmail(name));
+       return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow());
 
     }
     @Override
