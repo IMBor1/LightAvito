@@ -1,5 +1,8 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -17,10 +20,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
-
+@Slf4j
 @Service
 @Transactional
 public class AvatarServiceImpl implements AvatarService {
+    Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
     @Value("${path.to.image-avatar.folder}")
     private String imageDir;
     private final AvatarRepository avatarRepository;
@@ -40,6 +44,7 @@ public class AvatarServiceImpl implements AvatarService {
      */
     @Override
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
+        logger.info("Вы вызвали метод по изменению аватар");
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
         String extension = "." + getExtension(file.getOriginalFilename());
 
@@ -63,6 +68,7 @@ public class AvatarServiceImpl implements AvatarService {
         avatarRepository.save(avatar);
         user.setAvatar(avatar);
         userRepository.save(user);
+        logger.info("Вы успешно изменили аватар");
         return avatar;
     }
 

@@ -1,5 +1,8 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,9 +25,10 @@ import java.util.List;
 /**
  * Сервис для работы с объявлениями.
  */
+@Slf4j
 @Service
 public class AdServiceImpl implements AdService {
-
+    Logger logger = LoggerFactory.getLogger(AdServiceImpl.class);
     private final AdRepository adRepository;
     private final AdMapper adMapper;
     private final UserRepository userRepository;
@@ -53,6 +57,7 @@ public class AdServiceImpl implements AdService {
         ad.setAuthor(userRepository.findByEmail(userName).orElseThrow());
         ad.setImage(imageAdService.updateAdImage(ad.getId(),file));
         adRepository.save(ad);
+        logger.info("Вы успешно создали объявление");
         return adMapper.adToAdDTO(ad);
     }
 
@@ -62,6 +67,7 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public AdsDto getAllAds() {
+        logger.info("Вы вызвали метод получения всех объявлений");
         List<AdDto> listAdDTO = adMapper.toListAdDTO(adRepository.findAll());
         AdsDto adsDto = new AdsDto();
         adsDto.setCount(listAdDTO.size());
@@ -76,6 +82,7 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public ExtendedAdDto getAdInfo(Integer id) {
+        logger.info("Вы вызвали метод получения информации об объявлении");
         Ad ad = adRepository.findById(id).orElseThrow();
         return adMapper.adToExtendedAd(ad);
     }
@@ -87,6 +94,7 @@ public class AdServiceImpl implements AdService {
     @Override
     public void deleteAd(Integer id) {
         adRepository.deleteById(id);
+        logger.info("Вы успешно удалили объявление");
     }
 
     /**
@@ -101,6 +109,7 @@ public class AdServiceImpl implements AdService {
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setPrice(createOrUpdateAdDto.getPrice());
         ad.setDescription(createOrUpdateAdDto.getDescription());
+        logger.info("Вы успешно изменили информацию в объявлении");
         return adMapper.adToAdDTO(adRepository.save(ad));
     }
 
@@ -115,6 +124,7 @@ public class AdServiceImpl implements AdService {
         AdsDto adsDto = new AdsDto();
         adsDto.setCount(ads.size());
         adsDto.setResults(adMapper.toListAdDTO(ads));
+        logger.info("Вы нашли свои объявления");
         return adsDto;
     }
 

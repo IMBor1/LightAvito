@@ -1,5 +1,8 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,10 +13,10 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
-
+@Slf4j
 @Service
 public class MyUserDetailsService implements UserDetailsManager {
-
+    Logger logger = LoggerFactory.getLogger(MyUserDetailsService.class);
     private final PasswordEncoder encoder;
 
     private final UserRepository userRepository;
@@ -42,6 +45,7 @@ public class MyUserDetailsService implements UserDetailsManager {
                         .getAuthority()
                         .replace("ROLE_","")));
         userRepository.save(user1);
+        logger.info("Вы успешно добавили нового пользователя");
     }
 
     @Override
@@ -49,12 +53,14 @@ public class MyUserDetailsService implements UserDetailsManager {
         User userEdit = userRepository.findByEmail(user.getUsername()).orElseThrow();
         userEdit.setEmail(user.getUsername());
         userRepository.save(userEdit);
+        logger.info("Вы успешно обновили пользователя");
     }
 
     @Override
     public void deleteUser(String username) {
         User userToDelete = userRepository.findByEmail(username).orElseThrow();
         userRepository.delete(userToDelete);
+        logger.info("Вы успешно удалили пользователя " + userToDelete);
     }
 
     @Override
@@ -73,6 +79,7 @@ public class MyUserDetailsService implements UserDetailsManager {
 
         user.setCurrentPassword(userDetails.getPassword());
         userRepository.save(user);
+        logger.info("Вы успешно изменили пароль");
     }
 
     @Override

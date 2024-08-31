@@ -36,16 +36,34 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
         this.userDetailsService = userDetailsService;
     }
+
+    /**
+     *Изменение пароля у пользователя
+     * @param userSetPasswordDto
+     */
     @Override
     public void changeToPassword(UserSetPasswordDto userSetPasswordDto) {
        userDetailsService.changePassword(userSetPasswordDto.getCurrentPassword(),userSetPasswordDto.getNewPassword());
 
     }
+
+    /**
+     * Информация о пользователе
+     * @param name почта пользователя
+     * @return
+     */
     @Override
     public GetUserInfoDto infoAboutUser(String name) {
        return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow());
 
     }
+
+    /**
+     * Изменение данных пользователя
+     * @param updateUserDto
+     * @param email
+     * @return
+     */
     @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
         User user = userRepository.findByEmail(email).orElseThrow();

@@ -1,5 +1,8 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.comments.CommentDto;
 import ru.skypro.homework.dto.comments.CommentsDto;
@@ -17,10 +20,10 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.List;
-
+@Slf4j
 @Service
 public class CommentServiceImpl implements CommentService {
-
+    Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
     private final AdRepository adRepository;
     private final CommentRepository commentRepository;
 
@@ -47,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public CommentsDto getComments(Integer id) {
+        logger.info("Вы вызвали метод получения всех коменнтариев");
         List<Comment> comments = commentRepository.findAllByAdId(id);
         CommentsDto commentsDto = new CommentsDto();
         commentsDto.setCount(comments.size());
@@ -63,6 +67,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public CommentDto setComment(Integer adId, CreateOrUpdateCommentDto createOrUpdateCommentDto, String userName) {
+        logger.info("Вы вызвали метод изменения пароля");
         Ad ad = adRepository.getReferenceById(adId);
         User user = userRepository.findByEmail(userName).orElseThrow();
         Comment comment = new Comment();
@@ -73,6 +78,7 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
         ad.setComment(comment);
         adRepository.save(ad);
+        logger.info("Вы успешно изменили пароль");
         return commentMapper.commentToCommentDTO(comment);
     }
 
@@ -84,6 +90,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(Integer adId, Integer commentId) {
+        logger.info("Вы вызвали метод удаления комментария");
         Ad ad = adRepository.getReferenceById(adId);
         Comment comment = commentRepository.getReferenceById(commentId);
 
@@ -92,6 +99,7 @@ public class CommentServiceImpl implements CommentService {
                 .executeUpdate();
 
         adRepository.save(ad);
+        logger.info("Вы успешно удалили комментарий");
         commentRepository.deleteById(commentId);
     }
 
@@ -107,6 +115,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto updateComment(Integer adId,
                                     Integer commentId,
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto) {
+        logger.info("Вы вызвали метод обновления комментария");
         Ad ad = adRepository.getReferenceById(adId);
         Comment comment = commentRepository.getReferenceById(commentId);
         comment.setText(createOrUpdateCommentDto.getText());
@@ -118,6 +127,7 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
         ad.setComment(comment);
         adRepository.save(ad);
+        logger.info("Вы успешно удалили комментарий");
         return commentMapper.commentToCommentDTO(comment);
     }
 

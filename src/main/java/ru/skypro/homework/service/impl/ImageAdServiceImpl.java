@@ -1,5 +1,8 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,10 +18,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
-
+@Slf4j
 @Service
 @Transactional
 public class ImageAdServiceImpl implements ImageAdService {
+    Logger logger = LoggerFactory.getLogger(ImageAdServiceImpl.class);
     @Value("${path.to.ad-image.folder}")
     private String imageDir;
     private final ImageAdRepository imageAdRepository;
@@ -39,6 +43,7 @@ public class ImageAdServiceImpl implements ImageAdService {
      */
     @Override
     public ImageAd updateAdImage(Integer id, MultipartFile file) throws IOException {
+        logger.info("Вы вызвали метод обновления картинки у объявления");
         Ad ad = adRepository.getReferenceById(id);
         String extension = "." + getExtension(file.getOriginalFilename());
 
@@ -62,6 +67,7 @@ public class ImageAdServiceImpl implements ImageAdService {
         imageAdRepository.save(image);
         ad.setImage(image);
         adRepository.save(ad);
+        logger.info("Вы успешно обновили картинку в объявлении");
         return image;
     }
 
