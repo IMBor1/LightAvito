@@ -59,7 +59,7 @@ public class AdServiceImpl implements AdService {
         ad.setAuthor(userRepository.findByEmail(userName).orElseThrow(UserNotFaundExeption::new));
         ad.setImage(imageAdService.updateAdImage(ad.getId(),file));
         adRepository.save(ad);
-        logger.info("Вы успешно создали объявление");
+        log.info("Вы успешно создали объявление");
         return adMapper.adToAdDTO(ad);
     }
 
@@ -69,7 +69,7 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public AdsDto getAllAds() {
-        logger.info("Вы вызвали метод получения всех объявлений");
+        log.info("Вы вызвали метод получения всех объявлений");
         List<AdDto> listAdDTO = adMapper.toListAdDTO(adRepository.findAll());
         AdsDto adsDto = new AdsDto();
         adsDto.setCount(listAdDTO.size());
@@ -84,7 +84,7 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public ExtendedAdDto getAdInfo(Integer id) {
-        logger.info("Вы вызвали метод получения информации об объявлении");
+        log.info("Вы вызвали метод получения информации об объявлении");
         Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundExeseption::new);
         return adMapper.adToExtendedAd(ad);
     }
@@ -96,7 +96,7 @@ public class AdServiceImpl implements AdService {
     @Override
     public void deleteAd(Integer id) {
         adRepository.deleteById(id);
-        logger.info("Вы успешно удалили объявление");
+        log.info("Вы успешно удалили объявление");
     }
 
     /**
@@ -111,7 +111,7 @@ public class AdServiceImpl implements AdService {
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setPrice(createOrUpdateAdDto.getPrice());
         ad.setDescription(createOrUpdateAdDto.getDescription());
-        logger.info("Вы успешно изменили информацию в объявлении");
+        log.info("Вы успешно изменили информацию в объявлении");
         return adMapper.adToAdDTO(adRepository.save(ad));
     }
 
@@ -126,7 +126,7 @@ public class AdServiceImpl implements AdService {
         AdsDto adsDto = new AdsDto();
         adsDto.setCount(ads.size());
         adsDto.setResults(adMapper.toListAdDTO(ads));
-        logger.info("Вы нашли свои объявления");
+        log.info("Вы нашли свои объявления");
         return adsDto;
     }
 
