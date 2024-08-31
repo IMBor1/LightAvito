@@ -11,6 +11,8 @@ import ru.skypro.homework.dto.ads.AdDto;
 import ru.skypro.homework.dto.ads.AdsDto;
 import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
+import ru.skypro.homework.exeption.AdNotFoundExeseption;
+import ru.skypro.homework.exeption.UserNotFaundExeption;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.repository.AdRepository;
@@ -28,7 +30,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class AdServiceImpl implements AdService {
-    Logger logger = LoggerFactory.getLogger(AdServiceImpl.class);
+
     private final AdRepository adRepository;
     private final AdMapper adMapper;
     private final UserRepository userRepository;
@@ -54,7 +56,7 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdDto saveAd(AdDto adDTO, MultipartFile file, String userName) throws IOException {
         Ad ad = adRepository.save(adMapper.adDTOtoAd(adDTO));
-        ad.setAuthor(userRepository.findByEmail(userName).orElseThrow());
+        ad.setAuthor(userRepository.findByEmail(userName).orElseThrow(UserNotFaundExeption::new));
         ad.setImage(imageAdService.updateAdImage(ad.getId(),file));
         adRepository.save(ad);
         logger.info("Вы успешно создали объявление");
@@ -83,7 +85,7 @@ public class AdServiceImpl implements AdService {
     @Override
     public ExtendedAdDto getAdInfo(Integer id) {
         logger.info("Вы вызвали метод получения информации об объявлении");
-        Ad ad = adRepository.findById(id).orElseThrow();
+        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundExeseption::new);
         return adMapper.adToExtendedAd(ad);
     }
 
@@ -105,7 +107,7 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public AdDto updateInfoAd(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
-        Ad ad = adRepository.findById(id).orElseThrow();
+        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundExeseption::new);
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setPrice(createOrUpdateAdDto.getPrice());
         ad.setDescription(createOrUpdateAdDto.getDescription());

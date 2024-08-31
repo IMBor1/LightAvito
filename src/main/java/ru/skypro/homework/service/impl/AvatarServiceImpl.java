@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.exeption.AvatarNotFoundExeseption;
+import ru.skypro.homework.exeption.UserNotFaundExeption;
 import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.model.User;
@@ -18,11 +20,11 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Slf4j
 @Service
-@Transactional
 public class AvatarServiceImpl implements AvatarService {
     Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
     @Value("${path.to.image-avatar.folder}")
@@ -43,11 +45,11 @@ public class AvatarServiceImpl implements AvatarService {
      * @throws IOException
      */
     @Override
+    @Transactional
     public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
         logger.info("Вы вызвали метод по изменению аватар");
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
-        String extension = "." + getExtension(file.getOriginalFilename());
-
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFaundExeption::new);
+        String extension = "." + getExtension(Objects.requireNonNull(file.getOriginalFilename()));
         Path filePath = Path.of(imageDir, user.getId() + extension);
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -79,7 +81,10 @@ public class AvatarServiceImpl implements AvatarService {
      */
     @Override
     public byte[] getAvatar(Integer id) {
-        return avatarRepository.findImageByUserId(id).orElseThrow().getData();
+        return avatarRepository
+                .findImageByUserId(id)
+                .orElseThrow(AvatarNotFoundExeseption::new)
+                .getData();
     }
 
 }
