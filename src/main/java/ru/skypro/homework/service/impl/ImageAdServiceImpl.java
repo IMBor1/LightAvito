@@ -3,6 +3,8 @@ package ru.skypro.homework.service.impl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.exeption.AdNotFoundExeseption;
+import ru.skypro.homework.exeption.ImageAdNotFoundExeption;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.repository.AdRepository;
@@ -13,11 +15,11 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
-@Transactional
 public class ImageAdServiceImpl implements ImageAdService {
     @Value("${path.to.ad-image.folder}")
     private String imageDir;
@@ -38,11 +40,12 @@ public class ImageAdServiceImpl implements ImageAdService {
      * @throws IOException
      */
     @Override
+    @Transactional
     public ImageAd updateAdImage(Integer id, MultipartFile file) throws IOException {
-        Ad ad = adRepository.getReferenceById(id);
-        String extension = "." + getExtension(file.getOriginalFilename());
+        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundExeseption::new);
+        String extension = "." + getExtension(Objects.requireNonNull(file.getOriginalFilename()));
 
-        Path filePath = Path.of(imageDir, id + "." + getExtension(file.getOriginalFilename()));
+        Path filePath = Path.of(imageDir, id + extension);
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
         try (
@@ -72,7 +75,10 @@ public class ImageAdServiceImpl implements ImageAdService {
      */
     @Override
     public byte[] getImageAd(Integer id) {
-        return imageAdRepository.findImageAdByAdId(id).orElseThrow().getData();
+        return imageAdRepository
+                .findImageAdByAdId(id)
+                .orElseThrow(ImageAdNotFoundExeption::new)
+                .getData();
     }
 
 

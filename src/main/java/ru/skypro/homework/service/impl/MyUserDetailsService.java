@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.exeption.UserNotFaundExeption;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
 
@@ -53,7 +54,7 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public void deleteUser(String username) {
-        User userToDelete = userRepository.findByEmail(username).orElseThrow();
+        User userToDelete = userRepository.findByEmail(username).orElseThrow(UserNotFaundExeption::new);
         userRepository.delete(userToDelete);
     }
 
@@ -61,7 +62,7 @@ public class MyUserDetailsService implements UserDetailsManager {
     public void changePassword(String oldPassword, String newPassword) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(auth.getName()).orElseThrow();
+        User user = userRepository.findByEmail(auth.getName()).orElseThrow(UserNotFaundExeption::new);
 
         UserDetails userDetails =
                org.springframework.security.core.userdetails.User.builder()

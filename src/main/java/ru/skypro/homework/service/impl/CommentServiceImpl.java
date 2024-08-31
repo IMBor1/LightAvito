@@ -4,6 +4,9 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.comments.CommentDto;
 import ru.skypro.homework.dto.comments.CommentsDto;
 import ru.skypro.homework.dto.comments.CreateOrUpdateCommentDto;
+import ru.skypro.homework.exeption.AdNotFoundExeseption;
+import ru.skypro.homework.exeption.CommentNotFoundExeption;
+import ru.skypro.homework.exeption.UserNotFaundExeption;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.Comment;
@@ -64,7 +67,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto setComment(Integer adId, CreateOrUpdateCommentDto createOrUpdateCommentDto, String userName) {
         Ad ad = adRepository.getReferenceById(adId);
-        User user = userRepository.findByEmail(userName).orElseThrow();
+        User user = userRepository.findByEmail(userName).orElseThrow(UserNotFaundExeption::new);
         Comment comment = new Comment();
         comment.setAd(ad);
         comment.setText(createOrUpdateCommentDto.getText());
@@ -107,8 +110,8 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto updateComment(Integer adId,
                                     Integer commentId,
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        Ad ad = adRepository.getReferenceById(adId);
-        Comment comment = commentRepository.getReferenceById(commentId);
+        Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundExeseption::new);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundExeption::new);
         comment.setText(createOrUpdateCommentDto.getText());
 
         entityManager.createNativeQuery("DELETE FROM ad_comments WHERE comments_id = ?")
