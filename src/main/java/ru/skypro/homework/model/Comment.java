@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -16,18 +17,20 @@ import java.util.Objects;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pk;
+    private Integer id;
     @ManyToOne
     private User author;
-    private Integer createdAt;
+    private Timestamp createdAt;
     private String text;
+    @ManyToOne
+    private Ad ad;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return Objects.equals(pk, comment.pk) && Objects.equals(author, comment.author) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(text, comment.text);
+        return Objects.equals(id, comment.id) && Objects.equals(author, comment.author) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(text, comment.text);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class Comment {
     @Override
     public String toString() {
         return "Comment{" +
-                "pk=" + pk +
+                "pk=" + id +
                 ", author=" + author +
                 ", createdAt=" + createdAt +
                 ", text='" + text + '\'' +

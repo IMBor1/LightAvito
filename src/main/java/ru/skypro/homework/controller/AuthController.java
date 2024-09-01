@@ -1,6 +1,7 @@
 package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import ru.skypro.homework.service.AuthService;
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
+
 public class AuthController {
 
     private final AuthService authService;
@@ -27,6 +29,7 @@ public class AuthController {
     )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto login) {
+        log.info("Вызван метод контроллера авторизация пользователя");
         if (authService.login(login.getUsername(), login.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
@@ -40,6 +43,7 @@ public class AuthController {
     )
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterDto register) {
+        log.info("Вызван метод контроллера регистрация пользователя");
         if (authService.register(register)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {

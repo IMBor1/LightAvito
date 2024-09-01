@@ -6,15 +6,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.homework.dto.ads.AdDTO;
-import ru.skypro.homework.dto.ads.AdsDTO;
-import ru.skypro.homework.dto.ads.CreateOrUpdateAdDTO;
-import ru.skypro.homework.dto.ads.ExtendedAdDTO;
+import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.ads.AdDto;
+import ru.skypro.homework.dto.ads.AdsDto;
+import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
+import ru.skypro.homework.dto.ads.ExtendedAdDto;
+import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.ImageAdService;
+
+import java.io.IOException;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -23,14 +30,19 @@ import ru.skypro.homework.dto.ads.ExtendedAdDTO;
 @RequiredArgsConstructor
 public class AdsController {
 
-    @GetMapping
+    private final AdService adService;
+
+    private final ImageAdService imageAdService;
+
     @Operation(summary = "Получение всех объявлений")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK")
     })
-    public ResponseEntity<AdsDTO> findAllAds() {
-        return ResponseEntity.ok().build();
-    }
+    @GetMapping
+    public ResponseEntity<AdsDto> findAllAds() {
+        AdsDto adsDto = adService.getAllAds();
+        return ResponseEntity.ok(adsDto);}
+
 
     @PostMapping
     @Operation(summary = "Добавление объявления")
@@ -38,26 +50,31 @@ public class AdsController {
             @ApiResponse(responseCode = "201", description = "Created"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<AdDTO> createAd(@RequestBody AdDTO adDTO) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AdDto> createAd(@RequestPart AdDto properties,
+                                          @RequestPart MultipartFile image,
+                                          Authentication authentication) throws IOException {
+        log.info("Вызван метод контроллера создание объявления");
+        AdDto adDto = adService.saveAd(properties, image, authentication.getName());
+        return ResponseEntity.ok(adDto);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Получение информации об объявлении")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ExtendedAdDTO.class))),
+                    content = @Content(schema = @Schema(implementation = ExtendedAdDto.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<ExtendedAdDTO> getAdInfo(@PathVariable Integer id) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ExtendedAdDto> getAdInfo(@PathVariable Integer id) {
+        log.info("Вызван метод контроллера получение информации об объявлении");
+        ExtendedAdDto extendedAdDto = adService.getAdInfo(id);
+        return ResponseEntity.ok(extendedAdDto);
     }
 
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @adsService.isAuthorAd(principal.username, #adId)")
-
     @Operation(summary = "Удаление объявления")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "No Content"),
@@ -66,6 +83,8 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity deleteAd(@PathVariable Integer id) {
+        log.info("Вызван метод контроллера удаление объявления");
+        adService.deleteAd(id);
         return ResponseEntity.ok().build();
     }
 
@@ -74,24 +93,41 @@ public class AdsController {
     @Operation(summary = "Обновление информации об объявлении")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = AdDTO.class))),
+                    content = @Content(schema = @Schema(implementation = AdDto.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    public ResponseEntity<AdDTO> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDTO createOrUpdateAd) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AdDto> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto createOrUpdateAd) {
+        log.info("Вызван метод контроллера обновление информации об объявлении");
+        AdDto adDto = adService.updateInfoAd(id, createOrUpdateAd);
+        return ResponseEntity.ok(adDto);
+    }
+    @Operation(summary = "информация об объявлениях")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "Not found")})
+    @GetMapping("/me")
+    public ResponseEntity<AdsDto> findMyAds() {
+        log.info("Вызван метод контроллера информация об объявлениях пользователя");
+        AdsDto adsDto = adService.findMyAds();
+        return ResponseEntity.ok(adsDto);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<AdsDTO> findMyAds() {
-        return ResponseEntity.ok().build();
-    }
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole( 'ADMIN' ) or @adServiceImpl.findAdById(id).author.userName.equals(authentication.name)")
-    public ResponseEntity updateAdImage(@PathVariable Integer id) {
-        return ResponseEntity.ok().build();
+    @PreAuthorize("hasRole('ADMIN') or @adsService.isAuthorAd(principal.username, #adId)")
+    @Operation(summary = "Обновление информации об объявлении")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = AdDto.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Not found")
+    })
+    public void updateAdImage(@PathVariable Integer id, @RequestBody MultipartFile image) throws IOException {
+        log.info("Вызван метод контроллера обновление информации об обявлении");
+        imageAdService.updateAdImage(id, image);
     }
 
 }
