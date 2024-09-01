@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
-
+@Slf4j
 @Service
 public class ImageAdServiceImpl implements ImageAdService {
     Logger logger = LoggerFactory.getLogger(ImageAdServiceImpl.class);
@@ -45,27 +45,37 @@ public class ImageAdServiceImpl implements ImageAdService {
      */
     @Override
     @Transactional
-    public ImageAd updateAdImage(Integer id, MultipartFile file) throws IOException {
+    public ImageAd updateAdImage(Integer id, MultipartFile file){
         logger.info("Вы вызвали метод обновления картинки у объявления");
-        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundExeseption::new);
+        Ad ad = adRepository.findById(id).orElseThrow(() ->{
+            log.info("Объявление не найдено", AdNotFoundExeseption.class);
+            return new AdNotFoundExeseption();
+        });
+        ImageAd image = imageAdRepository.findImageAdByAdId(id).orElse(new ImageAd());
         String extension = "." + getExtension(Objects.requireNonNull(file.getOriginalFilename()));
         Path filePath = Path.of(imageDir, id + extension);
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
-        try (
-                InputStream is = file.getInputStream();
-                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
-        ) {
-            bis.transferTo(bos);
+        try {
+            Files.createDirectories(filePath.getParent());
+            Files.deleteIfExists(filePath);
+            try (
+                    InputStream is = file.getInputStream();
+                    OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                    BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                    BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
+            ) {
+                bis.transferTo(bos);
+            }
+
+            image.setAd(ad);
+            image.setFilePath(filePath.toString().replace(extension, "").replace("\\", "/"));
+            image.setFileSize(file.getSize());
+            image.setMediaType(file.getContentType());
+            image.setData(file.getBytes());
+
+        } catch (IOException e) {
+            log.info("Ошибка ввода-вывода изображения объявления: " + e.getMessage());
+            throw new RuntimeException();
         }
-        ImageAd image = imageAdRepository.findImageAdByAdId(id).orElse(new ImageAd());
-        image.setAd(ad);
-        image.setFilePath(filePath.toString().replace(extension, "").replace("\\","/"));
-        image.setFileSize(file.getSize());
-        image.setMediaType(file.getContentType());
-        image.setData(file.getBytes());
         imageAdRepository.save(image);
         ad.setImage(image);
         adRepository.save(ad);
@@ -82,7 +92,10 @@ public class ImageAdServiceImpl implements ImageAdService {
     public byte[] getImageAd(Integer id) {
         return imageAdRepository
                 .findImageAdByAdId(id)
-                .orElseThrow(ImageAdNotFoundExeption::new)
+                .orElseThrow(() -> {
+                    log.info("Изображение объявления не найдено", ImageAdNotFoundExeption.class);
+                    return new ImageAdNotFoundExeption();
+                })
                 .getData();
     }
 

@@ -120,7 +120,10 @@ public class CommentServiceImpl implements CommentService {
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto) {
         logger.info("Вы вызвали метод обновления комментария");
         Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundExeseption::new);
-        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundExeption::new);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> {
+            log.info("Комментарий не найден", CommentNotFoundExeption.class);
+            return new CommentNotFoundExeption();
+        } );
         comment.setText(createOrUpdateCommentDto.getText());
 
         entityManager.createNativeQuery("DELETE FROM ad_comments WHERE comments_id = ?")

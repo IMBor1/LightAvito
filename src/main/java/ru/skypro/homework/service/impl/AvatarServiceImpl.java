@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.exeption.AvatarNotFoundExeseption;
+import ru.skypro.homework.exeption.ImageAdNotFoundExeption;
 import ru.skypro.homework.exeption.UserNotFaundExeption;
 import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.model.ImageAd;
@@ -46,27 +47,35 @@ public class AvatarServiceImpl implements AvatarService {
      */
     @Override
     @Transactional
-    public Avatar updateImage(Authentication authentication, MultipartFile file) throws IOException {
+    public Avatar updateImage(Authentication authentication, MultipartFile file)  {
         logger.info("Вы вызвали метод по изменению аватар");
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFaundExeption::new);
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() ->{
+            log.info("Пользователь не найден", UserNotFaundExeption.class);
+            return new UserNotFaundExeption();
+        });
+        Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElse(new Avatar());
         String extension = "." + getExtension(Objects.requireNonNull(file.getOriginalFilename()));
         Path filePath = Path.of(imageDir, user.getId() + extension);
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
-        try (
-                InputStream is = file.getInputStream();
-                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
-        ) {
-            bis.transferTo(bos);
+        try {
+            Files.createDirectories(filePath.getParent());
+            Files.deleteIfExists(filePath);
+            try (
+                    InputStream is = file.getInputStream();
+                    OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                    BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                    BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
+            ) {
+                bis.transferTo(bos);
+            }
+            avatar.setUser(user);
+            avatar.setFilePath(filePath.toString().replace(extension, ""));
+            avatar.setFileSize(file.getSize());
+            avatar.setMediaType(file.getContentType());
+            avatar.setData(file.getBytes());
+        } catch (IOException e) {
+            log.info("Ошибка ввода-вывода аватара пользователя" + e.getMessage());
+            throw new RuntimeException();
         }
-        Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElse(new Avatar());
-        avatar.setUser(user);
-        avatar.setFilePath(filePath.toString().replace(extension, ""));
-        avatar.setFileSize(file.getSize());
-        avatar.setMediaType(file.getContentType());
-        avatar.setData(file.getBytes());
         avatarRepository.save(avatar);
         user.setAvatar(avatar);
         userRepository.save(user);
@@ -83,7 +92,10 @@ public class AvatarServiceImpl implements AvatarService {
     public byte[] getAvatar(Integer id) {
         return avatarRepository
                 .findImageByUserId(id)
-                .orElseThrow(AvatarNotFoundExeseption::new)
+                .orElseThrow(() -> {
+                    log.info("Изображение объявления не найдено", ImageAdNotFoundExeption.class);
+                    return new ImageAdNotFoundExeption();
+                })
                 .getData();
     }
 

@@ -56,8 +56,11 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdDto saveAd(AdDto adDTO, MultipartFile file, String userName) throws IOException {
         Ad ad = adRepository.save(adMapper.adDTOtoAd(adDTO));
-        ad.setAuthor(userRepository.findByEmail(userName).orElseThrow(UserNotFaundExeption::new));
-        ad.setImage(imageAdService.updateAdImage(ad.getId(),file));
+        ad.setAuthor(userRepository.findByEmail(userName).orElseThrow(() ->{
+            log.info("Пользователь не найден", UserNotFaundExeption.class);
+            return new UserNotFaundExeption();
+        }));
+        ad.setImage(imageAdService.updateAdImage(ad.getId(), file));
         adRepository.save(ad);
         log.info("Вы успешно создали объявление");
         return adMapper.adToAdDTO(ad);
@@ -85,7 +88,10 @@ public class AdServiceImpl implements AdService {
     @Override
     public ExtendedAdDto getAdInfo(Integer id) {
         log.info("Вы вызвали метод получения информации об объявлении");
-        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundExeseption::new);
+        Ad ad = adRepository.findById(id).orElseThrow(() ->{
+            log.info("Объявление не найдено", AdNotFoundExeseption.class);
+            return new AdNotFoundExeseption();
+        });
         return adMapper.adToExtendedAd(ad);
     }
 
@@ -107,7 +113,10 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public AdDto updateInfoAd(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
-        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundExeseption::new);
+        Ad ad = adRepository.findById(id).orElseThrow(() ->{
+            log.info("Объявление не найдено", AdNotFoundExeseption.class);
+            return new AdNotFoundExeseption();
+        });
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setPrice(createOrUpdateAdDto.getPrice());
         ad.setDescription(createOrUpdateAdDto.getDescription());

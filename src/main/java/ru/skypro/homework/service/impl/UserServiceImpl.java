@@ -1,14 +1,16 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
+import ru.skypro.homework.exeption.UserNotFaundExeption;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
-
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -40,7 +42,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public GetUserInfoDto infoAboutUser(String name) {
-       return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow());
+       return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow(() ->{
+           log.info("Пользователь не найден", UserNotFaundExeption.class);
+           return new UserNotFaundExeption();
+       }));
 
     }
 
@@ -52,7 +57,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->{
+            log.info("Пользователь не найден", UserNotFaundExeption.class);
+            return new UserNotFaundExeption();
+        });
         user.setFirstName(updateUserDto.getFirstName());
         user.setLastName(updateUserDto.getLastName());
         user.setPhone(updateUserDto.getPhone());

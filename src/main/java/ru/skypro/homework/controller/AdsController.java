@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,7 @@ public class AdsController {
         AdsDto adsDto = adService.getAllAds();
         return ResponseEntity.ok(adsDto);}
 
+
     @PostMapping
     @Operation(summary = "Добавление объявления")
     @ApiResponses({
@@ -50,7 +52,7 @@ public class AdsController {
     })
     public ResponseEntity<AdDto> createAd(@RequestPart AdDto properties,
                                           @RequestPart MultipartFile image,
-                                          Authentication authentication) throws IOException{
+                                          Authentication authentication) throws IOException {
         log.info("Вызван метод контроллера создание объявления");
         AdDto adDto = adService.saveAd(properties, image, authentication.getName());
         return ResponseEntity.ok(adDto);

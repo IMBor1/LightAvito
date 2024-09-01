@@ -29,7 +29,10 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        User user = userRepository.findByEmail(email).orElseThrow(() ->{
+                log.info("Имя пользователя не найдено: " + email);
+                return new UsernameNotFoundException(email);
+        });
         return new MyUserPrincipal(user);
     }
 
@@ -51,7 +54,10 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public void updateUser(UserDetails user) {
-        User userEdit = userRepository.findByEmail(user.getUsername()).orElseThrow();
+        User userEdit = userRepository.findByEmail(user.getUsername()).orElseThrow(() ->{
+            log.info("Пользователь не найден", UserNotFaundExeption.class);
+            return new UserNotFaundExeption();
+        });
         userEdit.setEmail(user.getUsername());
         userRepository.save(userEdit);
         logger.info("Вы успешно обновили пользователя");
@@ -59,7 +65,10 @@ public class MyUserDetailsService implements UserDetailsManager {
 
     @Override
     public void deleteUser(String username) {
-        User userToDelete = userRepository.findByEmail(username).orElseThrow(UserNotFaundExeption::new);
+        User userToDelete = userRepository.findByEmail(username).orElseThrow(() ->{
+            log.info("Пользователь не найден", UserNotFaundExeption.class);
+            return new UserNotFaundExeption();
+        });
         userRepository.delete(userToDelete);
         logger.info("Вы успешно удалили пользователя " + userToDelete);
     }
@@ -68,7 +77,10 @@ public class MyUserDetailsService implements UserDetailsManager {
     public void changePassword(String oldPassword, String newPassword) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(auth.getName()).orElseThrow(UserNotFaundExeption::new);
+        User user = userRepository.findByEmail(auth.getName()).orElseThrow(() ->{
+            log.info("Пользователь не найден", UserNotFaundExeption.class);
+            return new UserNotFaundExeption();
+        });
 
         UserDetails userDetails =
                org.springframework.security.core.userdetails.User.builder()
