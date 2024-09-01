@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.exeption.AvatarNotFoundExeseption;
 import ru.skypro.homework.exeption.ImageAdNotFoundExeption;
-import ru.skypro.homework.exeption.UserNotFaundExeption;
+import ru.skypro.homework.exeption.UserNotFoundExeption;
 import ru.skypro.homework.model.Avatar;
 import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.model.User;
@@ -50,8 +49,8 @@ public class AvatarServiceImpl implements AvatarService {
     public Avatar updateImage(Authentication authentication, MultipartFile file)  {
         logger.info("Вы вызвали метод по изменению аватар");
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() ->{
-            log.info("Пользователь не найден", UserNotFaundExeption.class);
-            return new UserNotFaundExeption();
+            log.info("Пользователь не найден", UserNotFoundExeption.class);
+            return new UserNotFoundExeption();
         });
         Avatar avatar = avatarRepository.findImageByUserId(user.getId()).orElse(new Avatar());
         String extension = "." + getExtension(Objects.requireNonNull(file.getOriginalFilename()));

@@ -9,7 +9,7 @@ import ru.skypro.homework.dto.comments.CommentsDto;
 import ru.skypro.homework.dto.comments.CreateOrUpdateCommentDto;
 import ru.skypro.homework.exeption.AdNotFoundExeseption;
 import ru.skypro.homework.exeption.CommentNotFoundExeption;
-import ru.skypro.homework.exeption.UserNotFaundExeption;
+import ru.skypro.homework.exeption.UserNotFoundExeption;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.Comment;
@@ -72,7 +72,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto setComment(Integer adId, CreateOrUpdateCommentDto createOrUpdateCommentDto, String userName) {
         logger.info("Вы вызвали метод изменения пароля");
         Ad ad = adRepository.getReferenceById(adId);
-        User user = userRepository.findByEmail(userName).orElseThrow(UserNotFaundExeption::new);
+        User user = userRepository.findByEmail(userName).orElseThrow(UserNotFoundExeption::new);
         Comment comment = new Comment();
         comment.setAd(ad);
         comment.setText(createOrUpdateCommentDto.getText());

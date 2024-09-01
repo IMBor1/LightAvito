@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.user.GetUserInfoDto;
 import ru.skypro.homework.dto.user.UpdateUserDto;
 import ru.skypro.homework.dto.user.UserSetPasswordDto;
-import ru.skypro.homework.exeption.UserNotFaundExeption;
+import ru.skypro.homework.exeption.UserNotFoundExeption;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
@@ -43,8 +43,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public GetUserInfoDto infoAboutUser(String name) {
        return userMapper.UserToGetUserInfo(userRepository.findByEmail(name).orElseThrow(() ->{
-           log.info("Пользователь не найден", UserNotFaundExeption.class);
-           return new UserNotFaundExeption();
+           log.info("Пользователь не найден", UserNotFoundExeption.class);
+           return new UserNotFoundExeption();
        }));
 
     }
@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto,String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() ->{
-            log.info("Пользователь не найден", UserNotFaundExeption.class);
-            return new UserNotFaundExeption();
+            log.info("Пользователь не найден", UserNotFoundExeption.class);
+            return new UserNotFoundExeption();
         });
         user.setFirstName(updateUserDto.getFirstName());
         user.setLastName(updateUserDto.getLastName());

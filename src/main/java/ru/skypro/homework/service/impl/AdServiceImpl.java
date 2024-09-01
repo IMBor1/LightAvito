@@ -1,8 +1,6 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -12,7 +10,7 @@ import ru.skypro.homework.dto.ads.AdsDto;
 import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
 import ru.skypro.homework.exeption.AdNotFoundExeseption;
-import ru.skypro.homework.exeption.UserNotFaundExeption;
+import ru.skypro.homework.exeption.UserNotFoundExeption;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.repository.AdRepository;
@@ -20,7 +18,6 @@ import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
 import ru.skypro.homework.service.ImageAdService;
 
-import javax.transaction.Transactional;
 import java.io.*;
 import java.util.List;
 
@@ -57,8 +54,8 @@ public class AdServiceImpl implements AdService {
     public AdDto saveAd(AdDto adDTO, MultipartFile file, String userName) throws IOException {
         Ad ad = adRepository.save(adMapper.adDTOtoAd(adDTO));
         ad.setAuthor(userRepository.findByEmail(userName).orElseThrow(() ->{
-            log.info("Пользователь не найден", UserNotFaundExeption.class);
-            return new UserNotFaundExeption();
+            log.info("Пользователь не найден", UserNotFoundExeption.class);
+            return new UserNotFoundExeption();
         }));
         ad.setImage(imageAdService.updateAdImage(ad.getId(), file));
         adRepository.save(ad);
