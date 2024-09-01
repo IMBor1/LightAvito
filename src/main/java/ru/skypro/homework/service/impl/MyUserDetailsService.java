@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Role;
-import ru.skypro.homework.exeption.UserNotFoundExeption;
+import ru.skypro.homework.exeption.UserNotFoundException;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
 @Slf4j
@@ -55,8 +55,8 @@ public class MyUserDetailsService implements UserDetailsManager {
     @Override
     public void updateUser(UserDetails user) {
         User userEdit = userRepository.findByEmail(user.getUsername()).orElseThrow(() ->{
-            log.info("Пользователь не найден", UserNotFoundExeption.class);
-            return new UserNotFoundExeption();
+            log.info("Пользователь не найден", UserNotFoundException.class);
+            return new UserNotFoundException();
         });
         userEdit.setEmail(user.getUsername());
         userRepository.save(userEdit);
@@ -66,8 +66,8 @@ public class MyUserDetailsService implements UserDetailsManager {
     @Override
     public void deleteUser(String username) {
         User userToDelete = userRepository.findByEmail(username).orElseThrow(() ->{
-            log.info("Пользователь не найден", UserNotFoundExeption.class);
-            return new UserNotFoundExeption();
+            log.info("Пользователь не найден", UserNotFoundException.class);
+            return new UserNotFoundException();
         });
         userRepository.delete(userToDelete);
         logger.info("Вы успешно удалили пользователя " + userToDelete);
@@ -78,8 +78,8 @@ public class MyUserDetailsService implements UserDetailsManager {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(auth.getName()).orElseThrow(() ->{
-            log.info("Пользователь не найден", UserNotFoundExeption.class);
-            return new UserNotFoundExeption();
+            log.info("Пользователь не найден", UserNotFoundException.class);
+            return new UserNotFoundException();
         });
 
         UserDetails userDetails =

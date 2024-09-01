@@ -8,8 +8,8 @@ import ru.skypro.homework.dto.comments.CommentDto;
 import ru.skypro.homework.dto.comments.CommentsDto;
 import ru.skypro.homework.dto.comments.CreateOrUpdateCommentDto;
 import ru.skypro.homework.exeption.AdNotFoundExeseption;
-import ru.skypro.homework.exeption.CommentNotFoundExeption;
-import ru.skypro.homework.exeption.UserNotFoundExeption;
+import ru.skypro.homework.exeption.CommentNotFoundException;
+import ru.skypro.homework.exeption.UserNotFoundException;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.Comment;
@@ -72,7 +72,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto setComment(Integer adId, CreateOrUpdateCommentDto createOrUpdateCommentDto, String userName) {
         logger.info("Вы вызвали метод изменения пароля");
         Ad ad = adRepository.getReferenceById(adId);
-        User user = userRepository.findByEmail(userName).orElseThrow(UserNotFoundExeption::new);
+        User user = userRepository.findByEmail(userName).orElseThrow(UserNotFoundException::new);
         Comment comment = new Comment();
         comment.setAd(ad);
         comment.setText(createOrUpdateCommentDto.getText());
@@ -121,8 +121,8 @@ public class CommentServiceImpl implements CommentService {
         logger.info("Вы вызвали метод обновления комментария");
         Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundExeseption::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> {
-            log.info("Комментарий не найден", CommentNotFoundExeption.class);
-            return new CommentNotFoundExeption();
+            log.info("Комментарий не найден", CommentNotFoundException.class);
+            return new CommentNotFoundException();
         } );
         comment.setText(createOrUpdateCommentDto.getText());
 

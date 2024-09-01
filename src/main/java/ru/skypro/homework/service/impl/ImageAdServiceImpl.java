@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.exeption.AdNotFoundExeseption;
-import ru.skypro.homework.exeption.ImageAdNotFoundExeption;
+import ru.skypro.homework.exeption.ImageAdNotFoundException;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.ImageAd;
 import ru.skypro.homework.repository.AdRepository;
@@ -93,8 +93,8 @@ public class ImageAdServiceImpl implements ImageAdService {
         return imageAdRepository
                 .findImageAdByAdId(id)
                 .orElseThrow(() -> {
-                    log.info("Изображение объявления не найдено", ImageAdNotFoundExeption.class);
-                    return new ImageAdNotFoundExeption();
+                    log.info("Изображение объявления не найдено", ImageAdNotFoundException.class);
+                    return new ImageAdNotFoundException();
                 })
                 .getData();
     }
