@@ -20,10 +20,12 @@ public class ImageController {
     private final ImageAdService imageAdService;
     @GetMapping(value = "/image-avatar/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, "image/*"})
     public byte[] getAvatar(@PathVariable Integer id) {
+        log.info("Вызван метод контролера возращаюший массив байт аватара");
         return avatarService.getAvatar(id);
     }
     @GetMapping(value = "/image-ad/{id}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, "image/*"})
     public byte[] getImageAd(@PathVariable Integer id) {
+        log.info("Вызван метод контролера возращаюший массив байт картинки объявления");
         return imageAdService.getImageAd(id);
     }
 

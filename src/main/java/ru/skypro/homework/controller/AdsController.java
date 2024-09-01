@@ -51,6 +51,7 @@ public class AdsController {
     public ResponseEntity<AdDto> createAd(@RequestPart AdDto properties,
                                           @RequestPart MultipartFile image,
                                           Authentication authentication) throws IOException{
+        log.info("Вызван метод контроллера создание объявления");
         AdDto adDto = adService.saveAd(properties, image, authentication.getName());
         return ResponseEntity.ok(adDto);
     }
@@ -64,6 +65,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity<ExtendedAdDto> getAdInfo(@PathVariable Integer id) {
+        log.info("Вызван метод контроллера получение информации об объявлении");
         ExtendedAdDto extendedAdDto = adService.getAdInfo(id);
         return ResponseEntity.ok(extendedAdDto);
     }
@@ -79,6 +81,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity deleteAd(@PathVariable Integer id) {
+        log.info("Вызван метод контроллера удаление объявления");
         adService.deleteAd(id);
         return ResponseEntity.ok().build();
     }
@@ -94,6 +97,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public ResponseEntity<AdDto> updateAdInfo(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto createOrUpdateAd) {
+        log.info("Вызван метод контроллера обновление информации об объявлении");
         AdDto adDto = adService.updateInfoAd(id, createOrUpdateAd);
         return ResponseEntity.ok(adDto);
     }
@@ -103,6 +107,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not found")})
     @GetMapping("/me")
     public ResponseEntity<AdsDto> findMyAds() {
+        log.info("Вызван метод контроллера информация об объявлениях пользователя");
         AdsDto adsDto = adService.findMyAds();
         return ResponseEntity.ok(adsDto);
     }
@@ -119,6 +124,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     public void updateAdImage(@PathVariable Integer id, @RequestBody MultipartFile image) throws IOException {
+        log.info("Вызван метод контроллера обновление информации об обявлении");
         imageAdService.updateAdImage(id, image);
     }
 

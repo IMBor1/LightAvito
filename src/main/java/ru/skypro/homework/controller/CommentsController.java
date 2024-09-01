@@ -11,7 +11,6 @@ import ru.skypro.homework.dto.comments.CommentDto;
 import ru.skypro.homework.dto.comments.CommentsDto;
 import ru.skypro.homework.dto.comments.CreateOrUpdateCommentDto;
 import ru.skypro.homework.service.CommentService;
-import ru.skypro.homework.service.impl.CommentServiceImpl;
 
 @Slf4j
 @RestController
@@ -25,10 +24,11 @@ public class CommentsController {
 
     @GetMapping("/{id}/comments")
     @Operation(
-            summary = "Получение комментариев обЪявления",
+            summary = "Получение комментариев объявления",
             tags = "Комментарии"
     )
     public ResponseEntity<CommentsDto> getComment(@PathVariable Integer id) {
+        log.info("Вызван метод контроллера получение комментариев объявления");
         CommentsDto commentsDto = commentService.getComments(id);
         return ResponseEntity.ok(commentsDto);
     }
@@ -41,6 +41,7 @@ public class CommentsController {
     public ResponseEntity<CommentDto> setComment(@PathVariable Integer id,
                                                  @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto,
                                                  Authentication authentication) {
+        log.info("Вызван метод контроллера добавление комментария к объявлению");
         CommentDto commentDto = commentService.setComment(id, createOrUpdateCommentDto, authentication.getName());
         return ResponseEntity.ok(commentDto);
     }
@@ -53,6 +54,7 @@ public class CommentsController {
     )
     public void deleteComment(@PathVariable Integer adId,
                               @PathVariable Integer commentId) {
+        log.info("Вызван метод контроллера удаление комментария");
         commentService.deleteComment(adId,commentId);
 
     }
@@ -66,6 +68,7 @@ public class CommentsController {
     public ResponseEntity<CommentDto> updateComment(@PathVariable Integer adId,
                                         @PathVariable Integer commentId,
                                         @RequestBody CreateOrUpdateCommentDto createOrUpdateCommentDto) {
+        log.info("Вызван метод контроллера обновление комментария");
         CommentDto commentDto = commentService.updateComment(adId, commentId, createOrUpdateCommentDto);
         return ResponseEntity.ok(commentDto);
     }

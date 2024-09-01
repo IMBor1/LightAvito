@@ -62,7 +62,7 @@ public class ImageAdServiceImpl implements ImageAdService {
         }
         ImageAd image = imageAdRepository.findImageAdByAdId(id).orElse(new ImageAd());
         image.setAd(ad);
-        image.setFilePath(filePath.toString().replace(extension, ""));
+        image.setFilePath(filePath.toString().replace(extension, "").replace("\\","/"));
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
         image.setData(file.getBytes());

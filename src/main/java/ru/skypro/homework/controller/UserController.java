@@ -51,6 +51,7 @@ public class UserController {
     })
     @GetMapping("/me")
     public ResponseEntity<GetUserInfoDto> infoAboutUser(Authentication authentication) {
+        log.info("Вызван метод контролера получение информации о пользователе");
         GetUserInfoDto getUserInfoDto = usersService.infoAboutUser(authentication.getName());
         return ResponseEntity.ok(getUserInfoDto);
     }
@@ -63,7 +64,8 @@ public class UserController {
         @PatchMapping("/me")
     @PreAuthorize("hasRole('ADMIN') or @userService.isUserName(principal.username, #email)")
         public ResponseEntity<UpdateUserDto> updateUser (@RequestBody UpdateUserDto updateUserDto, Authentication authentication){
-            UpdateUserDto updateUserDto1 = usersService.updateUser(updateUserDto, authentication.getName());
+        log.info("Вызван метод контролера обновление пользователя");
+        UpdateUserDto updateUserDto1 = usersService.updateUser(updateUserDto, authentication.getName());
             return ResponseEntity.ok(updateUserDto1);
 
         }
@@ -76,6 +78,7 @@ public class UserController {
                 @ApiResponse(responseCode = "401", description = "Unauthorized")
         })
         public void updateImage (Authentication authentication, @RequestBody MultipartFile image) throws IOException{
+            log.info("Вызван метод контролера обновление аватара пользователя");
             avatarService.updateImage(authentication, image);
         }
     }
