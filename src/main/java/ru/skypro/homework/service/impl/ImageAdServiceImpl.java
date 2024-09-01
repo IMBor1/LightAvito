@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.exeption.AdNotFoundException;
 import ru.skypro.homework.exeption.AdNotFoundExeseption;
 import ru.skypro.homework.exeption.ImageAdNotFoundException;
 import ru.skypro.homework.model.Ad;
@@ -48,8 +49,8 @@ public class ImageAdServiceImpl implements ImageAdService {
     public ImageAd updateAdImage(Integer id, MultipartFile file){
         logger.info("Вы вызвали метод обновления картинки у объявления");
         Ad ad = adRepository.findById(id).orElseThrow(() ->{
-            log.info("Объявление не найдено", AdNotFoundExeseption.class);
-            return new AdNotFoundExeseption();
+            log.info("Объявление не найдено", AdNotFoundException.class);
+            return new AdNotFoundException();
         });
         ImageAd image = imageAdRepository.findImageAdByAdId(id).orElse(new ImageAd());
         String extension = "." + getExtension(Objects.requireNonNull(file.getOriginalFilename()));

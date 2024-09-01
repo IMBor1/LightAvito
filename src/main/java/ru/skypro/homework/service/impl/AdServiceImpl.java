@@ -9,6 +9,7 @@ import ru.skypro.homework.dto.ads.AdDto;
 import ru.skypro.homework.dto.ads.AdsDto;
 import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
+import ru.skypro.homework.exeption.AdNotFoundException;
 import ru.skypro.homework.exeption.AdNotFoundExeseption;
 import ru.skypro.homework.exeption.UserNotFoundException;
 import ru.skypro.homework.mapper.AdMapper;
@@ -86,8 +87,8 @@ public class AdServiceImpl implements AdService {
     public ExtendedAdDto getAdInfo(Integer id) {
         log.info("Вы вызвали метод получения информации об объявлении");
         Ad ad = adRepository.findById(id).orElseThrow(() ->{
-            log.info("Объявление не найдено", AdNotFoundExeseption.class);
-            return new AdNotFoundExeseption();
+            log.info("Объявление не найдено", AdNotFoundException.class);
+            return new AdNotFoundException();
         });
         return adMapper.adToExtendedAd(ad);
     }
@@ -111,8 +112,8 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdDto updateInfoAd(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
         Ad ad = adRepository.findById(id).orElseThrow(() ->{
-            log.info("Объявление не найдено", AdNotFoundExeseption.class);
-            return new AdNotFoundExeseption();
+            log.info("Объявление не найдено", AdNotFoundException.class);
+            return new AdNotFoundException();
         });
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setPrice(createOrUpdateAdDto.getPrice());

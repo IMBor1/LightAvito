@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.comments.CommentDto;
 import ru.skypro.homework.dto.comments.CommentsDto;
 import ru.skypro.homework.dto.comments.CreateOrUpdateCommentDto;
+import ru.skypro.homework.exeption.AdNotFoundException;
 import ru.skypro.homework.exeption.AdNotFoundExeseption;
 import ru.skypro.homework.exeption.CommentNotFoundException;
 import ru.skypro.homework.exeption.UserNotFoundException;
@@ -119,7 +120,7 @@ public class CommentServiceImpl implements CommentService {
                                     Integer commentId,
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto) {
         logger.info("Вы вызвали метод обновления комментария");
-        Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundExeseption::new);
+        Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> {
             log.info("Комментарий не найден", CommentNotFoundException.class);
             return new CommentNotFoundException();
