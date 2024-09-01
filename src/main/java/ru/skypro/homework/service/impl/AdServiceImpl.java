@@ -10,7 +10,6 @@ import ru.skypro.homework.dto.ads.AdsDto;
 import ru.skypro.homework.dto.ads.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ads.ExtendedAdDto;
 import ru.skypro.homework.exeption.AdNotFoundException;
-import ru.skypro.homework.exeption.AdNotFoundExeseption;
 import ru.skypro.homework.exeption.UserNotFoundException;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.model.Ad;

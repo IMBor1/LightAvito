@@ -8,7 +8,6 @@ import ru.skypro.homework.dto.comments.CommentDto;
 import ru.skypro.homework.dto.comments.CommentsDto;
 import ru.skypro.homework.dto.comments.CreateOrUpdateCommentDto;
 import ru.skypro.homework.exeption.AdNotFoundException;
-import ru.skypro.homework.exeption.AdNotFoundExeseption;
 import ru.skypro.homework.exeption.CommentNotFoundException;
 import ru.skypro.homework.exeption.UserNotFoundException;
 import ru.skypro.homework.mapper.CommentMapper;

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.exeption.AdNotFoundException;
-import ru.skypro.homework.exeption.AdNotFoundExeseption;
 import ru.skypro.homework.exeption.ImageAdNotFoundException;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.ImageAd;
